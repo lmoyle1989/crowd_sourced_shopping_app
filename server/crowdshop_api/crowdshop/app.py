@@ -2,9 +2,10 @@ import os
 from flask import Flask
 from user_access import user
 from config import config
+from db import db
 
 
-def init_app(config_type=os.environ.get('FLASK_ENV')):
+def init_app(config_type=None):
     app = Flask(__name__)
 
     if config_type == 'production':
@@ -13,6 +14,11 @@ def init_app(config_type=os.environ.get('FLASK_ENV')):
         app.config.from_object(config.Development)
 
     reg_blueprint(app)
+
+    # initialize database with current app instance
+    db.init_app(app)
+    # create all tables
+    db.create_all()
 
     return app
 

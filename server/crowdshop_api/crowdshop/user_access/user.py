@@ -1,10 +1,10 @@
 from flask import (Blueprint, request, url_for)
 
 
-bp = Blueprint('user', __name__, url_prefix='/user')
+bp = Blueprint('users', __name__, url_prefix='/users')
 
 
-@bp.route('/', methods=['GET'])
+@bp.route('', methods=['GET'])
 def user_login():
     pass
 
