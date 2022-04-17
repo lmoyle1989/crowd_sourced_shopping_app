@@ -1,13 +1,14 @@
+import os
 
 
 class MainConfig(object):
-    pass
+    SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 class Development(MainConfig):
-    pass
+    SQLALCHEMY_DB_URI = os.environ.get('SQLALCHEMY_DB_URI_DEV')
 
 
 class Production(MainConfig):
-    pass
+    SQLALCHEMY_DB_URI = os.environ.get('SQLALCHEMY_DB_URI')
 
