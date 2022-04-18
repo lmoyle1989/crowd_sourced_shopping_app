@@ -2,7 +2,8 @@ import os
 
 
 class MainConfig(object):
-    SECRET_KEY = os.environ.get('SECRET_KEY')
+    SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
+    JWT_SECRET = os.getenv('JWT_SECRET', 'testing')
 
 
 class Development(MainConfig):
