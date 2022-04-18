@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:crowd_sourced_shopping_app/screens/live_feed_screen.dart';
 import 'package:crowd_sourced_shopping_app/screens/shopping_lists_screen.dart';
 import 'package:crowd_sourced_shopping_app/screens/upload_screen.dart';
+import 'package:crowd_sourced_shopping_app/models/user.dart';
 
 class MainTabController extends StatelessWidget {
+  //final User current_user; // passing current_user down through the widget tree constructors is probably not the best way to do this but keep this here for now
+
+  static const String routeName = 'main_tab_controller';
+
   static const List<Tab> _tabs = [
     Tab(icon: Icon(Icons.rss_feed)),
     Tab(icon: Icon(Icons.list)),
@@ -16,7 +21,10 @@ class MainTabController extends StatelessWidget {
     const UploadScreen(),
   ];
 
-  MainTabController({Key? key}) : super(key: key);
+  MainTabController({
+    Key? key,
+    //required this.current_user,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
