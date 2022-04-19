@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 import '/components/text_form_field.dart';
 
 class LoginPage extends StatefulWidget {
@@ -63,7 +64,9 @@ class _LoginPageState extends State<LoginPage> {
   String? emailValidate(String? email) {
     if (email!.isEmpty) {
       return 'Please enter your email';
-    } 
+    } else if (!EmailValidator.validate(email)) {
+      return 'Not a valid email';
+    }
     return null;
   }
 
