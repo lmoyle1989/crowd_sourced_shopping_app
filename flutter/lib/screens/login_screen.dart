@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
+import '/components/text_form_field.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -11,85 +13,67 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _username = TextEditingController();
+  final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Form(
-            key: _formKey,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Center(
-                      child: Container(
-                          padding: const EdgeInsets.all(5),
-                          width: MediaQuery.of(context).size.width * .75,
-                          child: TextFormField(
-                            controller: _username,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Username',
-                              isDense: true,
-                            ),
-                            textAlign: TextAlign.center,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your username';
-                              }
-                            },
-                          ))),
-                  Center(
-                      child: Container(
-                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 10),
-                          width: MediaQuery.of(context).size.width * .75,
-                          child: TextFormField(
-                            controller: _password,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Password',
-                                isDense: true),
-                            textAlign: TextAlign.center,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your password';
-                              }
-                            },
-                          ))),
-                  Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: OutlinedButton(
-                        child: const Text('login'),
-                        onPressed: () {
-                          Navigator.of(context).pushNamed(
-                              'main_tab_controller'); //placeholder until we get login working with a post request
-                          /*
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          if (_formKey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Success')));
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Try again')));
-                          }
-                          */
-                        },
-                      )),
-                  const Text('- or -'),
-                  Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.of(context).pushNamed('register');
-                          },
-                          child: const Text('register')))
-                ])));
+      body: Form(
+        key: _formKey,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              TextFieldWidget(
+                controller: _email, 
+                fieldText: 'Email', 
+                isObscure: false, 
+                errorHeight: 0.75, 
+                validator: emailValidate
+              ),
+              TextFieldWidget(
+                controller: _password, 
+                fieldText: 'Password', 
+                isObscure: true, 
+                errorHeight: 0.75, 
+                validator: passwordValidate
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: OutlinedButton(
+                  child: const Text('login'),
+                  onPressed: () {
+                    //_formKey.currentState!.validate();
+                    Navigator.of(context).pushNamed(
+                      'main_tab_controller'); //placeholder until we get login working with a post request
+                  },
+                )),
+              const Text('- or -'),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: OutlinedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('register');
+                  },
+                  child: const Text('register')))
+            ])));
+  }
+
+  //validators
+  String? emailValidate(String? email) {
+    if (email!.isEmpty) {
+      return 'Please enter your email';
+    } else if (!EmailValidator.validate(email)) {
+      return 'Not a valid email';
+    }
+    return null;
+  }
+
+  String? passwordValidate(String? password) {
+    if (password!.isEmpty) {
+      return 'Please enter your password';
+    } 
+    return null;
   }
 }
