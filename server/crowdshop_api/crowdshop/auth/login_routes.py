@@ -10,7 +10,7 @@ def login_user():
     data = request.json
     email = data['email']
     password = data['password']
-    user = Users.query.filter_by(email=email, password=password)
+    user = Users.query.filter_by(email=email, password=password).first()
     if user is None:
         return '', 404
     else:
