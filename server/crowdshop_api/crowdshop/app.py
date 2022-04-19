@@ -1,9 +1,11 @@
 from flask import Flask
-from user_access import user_routes
-from crowdshop.auth import login_routes
+from crowdshop.user_access import user_routes
+from crowdshop.auth import login_routes, jwt
 from config import config
 from db import db
-from crowdshop.auth import jwt
+from db.users import Users
+from db.stores import Stores
+from db.uploads import Uploads
 
 
 def init_app(config_type=None):
@@ -21,7 +23,8 @@ def init_app(config_type=None):
     # initialize jwt instance with current app
     jwt.init_app(app)
     # create all tables
-    db.create_all()
+    with app.app_context():
+        db.create_all()
 
     return app
 
