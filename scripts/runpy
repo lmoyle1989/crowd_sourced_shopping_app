@@ -9,7 +9,7 @@ sqlfile="sqlite-autoconf-3380200"
 
 if [[ "$USERIN" = "n" ]]
 then
-  	printf "\nyou answered no, now downloading sqlite\n\n"
+  	printf "\nyou answered no, now downloading and installing sqlite\n\n"
 	brew install sqlite
 fi
 
