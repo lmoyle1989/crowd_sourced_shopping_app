@@ -1,9 +1,16 @@
-import 'shopping_list_item.dart';
-
 class ShoppingList {
-  List<ShoppingListItem>? items;
+  String title;
+  List<String>? items;
 
   ShoppingList({
+    required this.title,
     this.items,
   });
+
+  factory ShoppingList.fromJSON(Map<String, dynamic> json) {
+    return ShoppingList(
+      title: json['title'],
+      items: List<String>.from(json['items']),
+    );
+  }
 }
