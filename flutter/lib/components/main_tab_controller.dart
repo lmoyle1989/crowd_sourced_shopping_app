@@ -17,7 +17,7 @@ class MainTabController extends StatelessWidget {
 
   final List<Widget> _screens = [
     const LiveFeedScreen(),
-    const ShoppingListsScreen(),
+    ShoppingListsScreen(),
     const UploadScreen(),
   ];
 
