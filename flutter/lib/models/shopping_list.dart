@@ -1,16 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ShoppingList {
-  String title;
-  List<String>? items;
+  String? listID;
+  String? title;
+  List<String> items;
 
   ShoppingList({
-    required this.title,
-    this.items,
+    this.listID,
+    this.title,
+    this.items = const [],
   });
 
-  factory ShoppingList.fromJSON(Map<String, dynamic> json) {
+  factory ShoppingList.fromSnapshot(DocumentSnapshot documentSnapshot) {
     return ShoppingList(
-      title: json['title'],
-      items: List<String>.from(json['items']),
+      listID: documentSnapshot.id,
+      title: documentSnapshot['title'],
+      items: List<String>.from(documentSnapshot['items']),
     );
+  }
+
+  void deleteItem(int index) {
+    if (items.isNotEmpty) {
+      items.removeAt(index);
+    }
+  }
+
+  void addItem(String item) {
+    items.add(item);
   }
 }
