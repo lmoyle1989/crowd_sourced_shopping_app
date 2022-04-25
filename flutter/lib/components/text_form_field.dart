@@ -3,17 +3,21 @@ import 'package:flutter/material.dart';
 class TextFieldWidget extends StatelessWidget {
   final TextEditingController controller;
   final String fieldText;
-  final bool isObscure;
-  final double errorHeight;
+  final double? errorHeight;
   final String? Function(String?) validator;
+  final bool? isObscure;
+  final TextInputType? keyboardType;
+  final double? contWidth;
 
   const TextFieldWidget({
     Key? key, 
     required this.controller,
     required this.fieldText,
-    required this.isObscure,
-    required this.errorHeight,
-    required this.validator
+    required this.validator,
+    this.errorHeight,
+    this.isObscure,
+    this.keyboardType,
+    this.contWidth
   }) : super(key: key);
 
   @override
@@ -22,10 +26,10 @@ class TextFieldWidget extends StatelessWidget {
       child: 
       Container(
         padding: const EdgeInsets.all(5),
-        width: MediaQuery.of(context).size.width * .75,
+        width: MediaQuery.of(context).size.width * (contWidth ?? 0.75),
         child: TextFormField(
           controller: controller,
-          obscureText: isObscure,
+          obscureText: isObscure ?? false,
           textAlign: TextAlign.center,
           enableSuggestions: false,
           autocorrect: false,
@@ -33,9 +37,10 @@ class TextFieldWidget extends StatelessWidget {
             border: const OutlineInputBorder(),
             hintText: fieldText,
             isDense: true,
-            errorStyle: TextStyle(height: errorHeight)
+            errorStyle: TextStyle(height: errorHeight ?? 0.75)
           ),
-          validator: validator
+          validator: validator,
+          keyboardType: keyboardType ?? TextInputType.text,
         )
       )
     );
