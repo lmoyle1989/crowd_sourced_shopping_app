@@ -3,7 +3,11 @@ from flask import Flask
 from user_access import user
 from config import config
 from db import db
-
+from db.users import Users
+from db.stores import Stores
+from db.uploads import Uploads
+from db.tags import Tags
+from db.tags_uploads import TagsUploads
 
 def init_app(config_type=None):
     app = Flask(__name__)
