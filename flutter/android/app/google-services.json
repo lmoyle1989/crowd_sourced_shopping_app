@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "97441384392",
+    "project_id": "crowd-sourced-shopping-a-80e9d",
+    "storage_bucket": "crowd-sourced-shopping-a-80e9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97441384392:android:5f0014db00e4af367c22fd",
+        "android_client_info": {
+          "package_name": "edu.oregonstate.u934045150.crowd_sourced_shopping_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "97441384392-9e2j2t5ccm8ioukscvd50fmvuis24k5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnxDacuV3-9KS8Vf58fGc8a3jRRnwPJak"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "97441384392-9e2j2t5ccm8ioukscvd50fmvuis24k5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

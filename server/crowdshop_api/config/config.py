@@ -2,13 +2,14 @@ import os
 
 
 class MainConfig(object):
-    SECRET_KEY = os.environ.get('SECRET_KEY')
+    SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
+    JWT_SECRET = os.getenv('JWT_SECRET', 'testing')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
 
 
 class Development(MainConfig):
-    SQLALCHEMY_DB_URI = os.environ.get('SQLALCHEMY_DB_URI_DEV')
+    pass
 
 
 class Production(MainConfig):
-    SQLALCHEMY_DB_URI = os.environ.get('SQLALCHEMY_DB_URI')
-
+    pass

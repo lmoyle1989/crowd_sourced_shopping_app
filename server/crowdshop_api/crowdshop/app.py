@@ -1,6 +1,6 @@
-import os
 from flask import Flask
-from user_access import user
+from crowdshop.user_access import user_routes
+from crowdshop.auth import login_routes, jwt
 from config import config
 from db import db
 from db.users import Users
@@ -8,6 +8,7 @@ from db.stores import Stores
 from db.uploads import Uploads
 from db.tags import Tags
 from db.tags_uploads import TagsUploads
+
 
 def init_app(config_type=None):
     app = Flask(__name__)
@@ -21,14 +22,18 @@ def init_app(config_type=None):
 
     # initialize database with current app instance
     db.init_app(app)
+    # initialize jwt instance with current app
+    jwt.init_app(app)
     # create all tables
-    db.create_all()
+    with app.app_context():
+        db.create_all()
 
     return app
 
 
 def reg_blueprint(app):
-    app.register_blueprint(user.bp)
+    app.register_blueprint(user_routes.bp)
+    app.register_blueprint(login_routes.bp)
 
 
 

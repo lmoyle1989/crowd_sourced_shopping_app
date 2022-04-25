@@ -2,9 +2,11 @@ from db import db
 
 
 class Uploads(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    store_id = db.Column(db.Integer, db.ForeignKey('store.id'), nullable=False)
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    store_id = db.Column(db.Integer, db.ForeignKey('stores.id'),
+                         nullable=False)
     price = db.Column(db.Integer)
     upload_date = db.Column(db.DateTime, nullable=False)
     on_sale = db.Column(db.Boolean, default=False)

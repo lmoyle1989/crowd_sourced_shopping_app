@@ -3,7 +3,7 @@ from db import db
 
 class Users(db.Model):
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     first_name = db.Column(db.String(60), unique=True, nullable=False)
     last_name = db.Column(db.String(60), unique=True, nullable=False)
     password = db.Column(db.String(32), nullable=False)
@@ -14,8 +14,8 @@ class Users(db.Model):
     # for relationships
     uploads = db.relationship('Uploads', backref='user', lazy=True)
 
-    def __init__(self, first_name, last_name, password, email, upload_count,
-                 user_rank):
+    def __init__(self, first_name, last_name, password, email, upload_count=0,
+                 user_rank='starter'):
         self.first_name = first_name
         self.last_name = last_name
         self.password = password
