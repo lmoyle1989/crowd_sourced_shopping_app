@@ -1,0 +1,245 @@
+{
+	"info": {
+		"_postman_id": "ece8de08-8a81-4dc3-89a4-780e004556f2",
+		"name": "crowdshop-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user-registration",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"data = pm.response.json()",
+							"",
+							"pm.test(\"user registered successfully\", ()=>{",
+							"    pm.expect(data).to.have.property(\"user_id\")",
+							"    pm.environment.set('added_user', data[\"user_id\"])",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fn\":\"t3firstname\",\n    \"ln\":\"t3lastname\",\n    \"email\":\"t3@yahoo.com\",\n    \"password\":\"test\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "valid-login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"data = pm.response.json()",
+							"",
+							"pm.test(\"user logged in\", ()=>{",
+							"    pm.expect(data).to.have.property(\"user_token\")",
+							"    pm.environment.set('user_token',data[\"user_token\"])",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"t3@yahoo.com\",\n    \"password\":\"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/login",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "invalid-login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"invalid login\", ()=>{",
+							"    pm.expect(pm.response.code).to.equal(401)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"nonexistant@yahoo.com\",\n    \"password\": \"wrong_pass\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/login",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register with same email",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"user already in db\", ()=>{",
+							"    pm.expect(pm.response.code).to.equal(409)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fn\":\"t2firstname\",\n    \"ln\":\"t2lastname\",\n    \"email\":\"t2@yahoo.com\",\n    \"password\":\"test\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth-path-jwt-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"jwt required path accessed\", ()=>{",
+							"    pm.expect(pm.response.code).to.equal(200)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/users/{{added_user}}/uploads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users",
+						"{{added_user}}",
+						"uploads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth-path-no-jwt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"not authorized--no auth token provided\", ()=>{",
+							"    pm.expect(pm.response.code).to.equal(401)",
+							"    pm.expect(pm.response.json()[\"msg\"]).to.equal(\"Missing Authorization Header\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{app_url}}/users/{{added_user}}/uploads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users",
+						"{{added_user}}",
+						"uploads"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
