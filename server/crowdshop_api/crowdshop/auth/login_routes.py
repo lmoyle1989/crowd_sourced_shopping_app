@@ -12,7 +12,7 @@ def login_user():
     password = data['password']
     user = Users.query.filter_by(email=email, password=password).first()
     if user is None:
-        return '', 404
+        return 'invalid username or password', 401
     else:
         user_token = create_access_token(identity=email)
         return {"user_token": user_token}, 201
