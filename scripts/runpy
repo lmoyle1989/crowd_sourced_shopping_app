@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 printf "\n\ndo you have sqlite installed? y/n\n"
 read USERIN
