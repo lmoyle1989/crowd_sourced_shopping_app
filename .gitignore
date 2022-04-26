@@ -4,4 +4,5 @@ env/
 *.DS_Store
 __pycache__/
 server/runpy
+venv/
 

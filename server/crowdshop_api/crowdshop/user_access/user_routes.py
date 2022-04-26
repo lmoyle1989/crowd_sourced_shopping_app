@@ -29,9 +29,9 @@ def user_register():
     return generate_response(201, data={"user_id": user.id})
 
 
-@bp.route('/<user_id>/upload', methods=['GET', 'POST'])
+@bp.route('/<user_id>/uploads', methods=['GET', 'POST'])
 @jwt_required()
 def user_upload(user_id):
-    pass
+    return 'jwt auth working', 200
 
 

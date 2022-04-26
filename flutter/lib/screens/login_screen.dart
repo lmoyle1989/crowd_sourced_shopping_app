@@ -28,16 +28,14 @@ class _LoginPageState extends State<LoginPage> {
               TextFieldWidget(
                 controller: _email, 
                 fieldText: 'Email', 
-                isObscure: false, 
-                errorHeight: 0.75, 
-                validator: emailValidate
+                validator: emailValidate,
+                keyboardType: TextInputType.emailAddress,
               ),
               TextFieldWidget(
                 controller: _password, 
-                fieldText: 'Password', 
-                isObscure: true, 
-                errorHeight: 0.75, 
-                validator: passwordValidate
+                fieldText: 'Password',  
+                validator: passwordValidate,
+                isObscure: true,
               ),
               Padding(
                 padding: const EdgeInsets.all(5),
