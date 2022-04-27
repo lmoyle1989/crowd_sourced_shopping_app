@@ -8,6 +8,7 @@ from db.stores import Stores
 from db.uploads import Uploads
 from db.tags import Tags
 from db.tags_uploads import TagsUploads
+from deals import deals_routes
 
 
 def init_app(config_type=None):
@@ -34,6 +35,6 @@ def init_app(config_type=None):
 def reg_blueprint(app):
     app.register_blueprint(user_routes.bp)
     app.register_blueprint(login_routes.bp)
-
+    app.register_blueprint(deals_routes.bp)
 
 
