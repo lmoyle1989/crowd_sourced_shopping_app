@@ -20,8 +20,7 @@ class ShoppingListsScreen extends StatelessWidget {
     if (documentSnapshot == null) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) =>
-              const ShoppingListCrudScreen(documentSnapshot: null),
+          builder: (context) => ShoppingListCrudScreen(documentSnapshot: null),
         ),
       );
     } else {
