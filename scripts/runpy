@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 printf "\n\ndo you have sqlite installed? y/n\n"
 read USERIN
@@ -20,7 +20,7 @@ if [[ ! -f $DBFILENAME ]]; then
 	crowdpath=$(echo $(readlink -f $DBFILENAME))
 fi
 
-mainpath=${crowdpath//////}
+mainpath=${crowdpath//\//\//}
 
 cd crowdshop_api
 echo "creating env file"
@@ -40,5 +40,3 @@ export PYTHONPATH=crowdshop_api
 pip install -r requirements.txt
 
 python3 run.py
-
-exit 0
