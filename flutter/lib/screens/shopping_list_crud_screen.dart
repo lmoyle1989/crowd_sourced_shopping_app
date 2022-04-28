@@ -41,6 +41,10 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
     setState(() {});
   }
 
+  void _editListTitle(ShoppingList shoppingList) {
+    setState(() {});
+  }
+
   void _saveChanges(ShoppingList shoppingList) async {
     if (shoppingList.listID != null) {
       await widget._shoppingLists
@@ -52,6 +56,8 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
     }
     Navigator.of(context).pop();
   }
+
+  void _postList(ShoppingList shoppingList) async {}
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +72,13 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
             title: Text(
               shoppingList.title!.toUpperCase(),
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
               ),
             ),
             trailing: IconButton(
-              onPressed: null,
+              onPressed: () => _editListTitle(shoppingList),
               icon: const Icon(Icons.edit),
             ),
           ),
@@ -80,8 +87,16 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: shoppingList.items.length,
+              itemCount: shoppingList.items.length + 1,
               itemBuilder: (context, index) {
+                if (index == shoppingList.items.length) {
+                  return ListTile(
+                    leading: IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () => _addItem,
+                    ),
+                  );
+                }
                 return ListTile(
                   title: Text(shoppingList.items[index]),
                   trailing: IconButton(
@@ -99,12 +114,12 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
                 onPressed: () => _saveChanges(shoppingList),
                 child: const Text("Save Changes"),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 50,
               ),
               ElevatedButton(
-                onPressed: null,
-                child: Text("Add New Item"),
+                onPressed: () => _postList(shoppingList),
+                child: const Text("Find Best Store"),
               ),
             ],
           )

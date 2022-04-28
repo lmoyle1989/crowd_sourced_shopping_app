@@ -75,9 +75,9 @@ class ShoppingListsScreen extends StatelessWidget {
                 return ListTile(
                   leading: const Icon(Icons.shopping_bag),
                   title: Text(shoppingList.title! +
-                      " - " +
+                      "  (" +
                       shoppingList.items.length.toString() +
-                      " Items"),
+                      ")"),
                   trailing: SizedBox(
                     width: 100,
                     child: Row(
