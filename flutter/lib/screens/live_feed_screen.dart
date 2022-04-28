@@ -32,7 +32,9 @@ class ChatMessage extends StatelessWidget {
             children: [
               Container(
                 margin: const EdgeInsets.only(right: 16.0),
-                child: CircleAvatar(child: Text(_name[0])),
+                child: CircleAvatar(
+                    child: Text(_name[
+                        0])), // can be changed later to have shopper_rank icon
               ),
               Expanded(
                 child: Column(
@@ -93,6 +95,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               margin: const EdgeInsets.symmetric(horizontal: 4.0),
               child: IconButton(
                 icon: const Icon(Icons.send),
+                // passes the text to the handleSubmitted fn to clear
                 onPressed: _isComposing
                     ? () => _handleSubmitted(_textController.text)
                     : null,
