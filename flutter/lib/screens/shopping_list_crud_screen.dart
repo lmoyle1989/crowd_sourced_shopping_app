@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 class ShoppingListCrudScreen extends StatefulWidget {
   final DocumentSnapshot? documentSnapshot;
 
-  const ShoppingListCrudScreen({
+  final CollectionReference _shoppingLists =
+      FirebaseFirestore.instance.collection('shopping_lists');
+
+  ShoppingListCrudScreen({
     Key? key,
     this.documentSnapshot,
   }) : super(key: key);
@@ -38,7 +41,17 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
     setState(() {});
   }
 
-  void _saveChanges() {}
+  void _saveChanges(ShoppingList shoppingList) async {
+    if (shoppingList.listID != null) {
+      await widget._shoppingLists
+          .doc(shoppingList.listID)
+          .update({'title': shoppingList.title, 'items': shoppingList.items});
+    } else {
+      await widget._shoppingLists
+          .add({'title': shoppingList.title, 'items': shoppingList.items});
+    }
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +62,21 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
       ),
       body: Column(
         children: [
-          Row(
-            children: [Text("Title: " + shoppingList.title!)],
+          ListTile(
+            title: Text(
+              shoppingList.title!.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            trailing: IconButton(
+              onPressed: null,
+              icon: const Icon(Icons.edit),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
           ),
           Expanded(
             child: ListView.builder(
@@ -66,6 +92,22 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
               },
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () => _saveChanges(shoppingList),
+                child: const Text("Save Changes"),
+              ),
+              SizedBox(
+                width: 50,
+              ),
+              ElevatedButton(
+                onPressed: null,
+                child: Text("Add New Item"),
+              ),
+            ],
+          )
         ],
       ),
     );
