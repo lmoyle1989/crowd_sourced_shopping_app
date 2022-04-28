@@ -4,6 +4,7 @@ import os
 class MainConfig(object):
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
     JWT_SECRET = os.getenv('JWT_SECRET', 'testing')
+    SQLALCHEMY_TRACK_MODIFICATIONS = 'False'
 
 
 class Development(MainConfig):
