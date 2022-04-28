@@ -38,37 +38,32 @@ class _RegisterPageState extends State<RegisterPage> {
               TextFieldWidget(
                 controller: _firstname, 
                 fieldText: 'First Name', 
-                isObscure: false, 
                 errorHeight: 0,
                 validator: nameValidate
               ),
               TextFieldWidget(
                 controller: _lastname, 
                 fieldText: 'Last Name', 
-                isObscure: false, 
                 errorHeight: 0,
                 validator: nameValidate
               ),
               TextFieldWidget(
                 controller: _email, 
                 fieldText: 'Email', 
-                isObscure: false, 
-                errorHeight: 0.75,
-                validator: emailValidate
+                validator: emailValidate,
+                keyboardType: TextInputType.emailAddress,
               ),
               TextFieldWidget(
                 controller: _password, 
                 fieldText: 'Password', 
+                validator: passwordValidate,
                 isObscure: true, 
-                errorHeight: 0.75, 
-                validator: passwordValidate
               ),
               TextFieldWidget(
                 controller: _passwordConfirm, 
                 fieldText: 'Confirm Password', 
+                validator: confirmPassValidate,
                 isObscure: true, 
-                errorHeight: 0.75, 
-                validator: confirmPassValidate
               ),
               Padding(
                 padding: const EdgeInsets.all(5),

@@ -12,6 +12,10 @@ class Uploads(db.Model):
     on_sale = db.Column(db.Boolean, default=False)
     barcode = db.Column(db.Integer, nullable=False)
 
+    # for relationship
+    tag_upload_relationship = db.relationship('TagsUploads',
+                                              backref='uploads', lazy=True)
+
     def __init__(self, price, upload_date, on_sale, barcode):
         self.price = price
         self.upload_date = upload_date
