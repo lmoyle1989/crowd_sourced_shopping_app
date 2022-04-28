@@ -23,7 +23,7 @@ fi
 mainpath=${crowdpath//\//\//}
 
 cd crowdshop_api
-echo "creating env file"
+echo "creating env file in $(pwd)"
 
 if [[ ! -d "env" ]]; then
 	python3 -m venv env
@@ -40,3 +40,4 @@ export PYTHONPATH=crowdshop_api
 pip install -r requirements.txt
 
 python3 run.py
+
