@@ -6,29 +6,36 @@ read USERIN
 sqlfiletar="sqlite-autoconf-3380200.tar.gz"
 sqlurl="https://www.sqlite.org/2022/"
 sqlfile="sqlite-autoconf-3380200"
+DBFILENAME="crowdshop_dev_db.db"
 
-if [[ "$USERIN" = "n" ]]
+if [[ "$USERIN" = "n" ]];
 then
   	printf "\nyou answered no, now downloading and installing sqlite\n\n"
 	brew install sqlite
 fi
 
 echo "making db file"
-touch crowdshop_dev_db.db
-crowdpath=$(echo $(readlink -f crowdshop_dev_db.db))
+if [[ ! -f $DBFILENAME ]]; then
+	touch crowdshop_dev_db.db
+	crowdpath=$(echo $(readlink -f $DBFILENAME))
+fi
 
 mainpath=${crowdpath//////}
 
 cd crowdshop_api
 echo "creating env file"
 
-python3 -m venv env
+if [[ ! -d "env" ]]; then
+	python3 -m venv env
+fi
+
 source env/bin/activate
 
 
-export SQLALCHEMY_DATABASE_URI="sqlite://$mainpath"
+export SQLALCHEMY_DATABASE_URI=sqlite://$mainpath
 export SQLALCHEMY_TRACK_MODIFICATIONS=False
 export FLASK_ENV=development
+export PYTHONPATH=crowdshop_api
 
 pip install -r requirements.txt
 
