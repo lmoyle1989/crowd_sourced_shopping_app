@@ -134,6 +134,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     setState(() {
       _isComposing = false;
     });
+    // this adds a new comment to the messsage list above
     ChatMessage message = ChatMessage(
       text: text,
       animationController: AnimationController(
