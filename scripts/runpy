@@ -14,16 +14,16 @@ then
 	brew install sqlite
 fi
 
-echo "making db file"
+echo "\nmaking db file if it doesn't exist\n"
 if [[ ! -f $DBFILENAME ]]; then
 	touch crowdshop_dev_db.db
-	crowdpath=$(echo $(readlink -f $DBFILENAME))
 fi
 
+crowdpath=$(echo $(readlink -f $DBFILENAME))
 mainpath=${crowdpath//\//\//}
 
 cd crowdshop_api
-echo "creating env file in $(pwd)"
+echo "\ncreating env file in $(pwd)\n"
 
 if [[ ! -d "env" ]]; then
 	python3 -m venv env
