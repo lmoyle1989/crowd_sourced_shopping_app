@@ -43,60 +43,66 @@ class ShoppingListsScreen extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ),
-      body: StreamBuilder(
-        stream: _shoppingLists.snapshots(),
-        builder: (BuildContext context,
-            AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-          if (!streamSnapshot.hasData) {
-            return const Center(
-              child: SizedBox(
-                height: 100,
-                width: 100,
-                child: CircularProgressIndicator(),
+      body: Column(
+        children: [
+          const ListTile(
+            title: Text(
+              "YOUR SHOPPING LISTS",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
               ),
-            );
-          } else {
-            if (streamSnapshot.data!.docs.isEmpty) {
-              return const Center(
-                child: SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-            return ListView.builder(
-              itemCount: streamSnapshot.data!.docs.length,
-              itemBuilder: ((context, index) {
-                DocumentSnapshot documentSnapshot =
-                    streamSnapshot.data!.docs[index];
-                ShoppingList shoppingList =
-                    ShoppingList.fromSnapshot(documentSnapshot);
-                return ListTile(
-                  leading: const Icon(Icons.shopping_bag),
-                  title: Text(shoppingList.title! +
-                      "  (" +
-                      shoppingList.items.length.toString() +
-                      ")"),
-                  trailing: SizedBox(
-                    width: 100,
-                    child: Row(
-                      children: [
-                        IconButton(
-                            onPressed: () =>
-                                _pushCrudScreen(context, documentSnapshot),
-                            icon: const Icon(Icons.edit)),
-                        IconButton(
-                            onPressed: () => _deleteList(shoppingList.listID!),
-                            icon: const Icon(Icons.delete)),
-                      ],
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder(
+              stream: _shoppingLists.snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                if (!streamSnapshot.hasData) {
+                  return const Center(
+                    child: SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: CircularProgressIndicator(),
                     ),
-                  ),
-                );
-              }),
-            );
-          }
-        },
+                  );
+                } else {
+                  if (streamSnapshot.data!.docs.isEmpty) {
+                    return const Center(
+                      child: SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: Icon(Icons.shopping_bag),
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: streamSnapshot.data!.docs.length,
+                    itemBuilder: ((context, index) {
+                      DocumentSnapshot documentSnapshot =
+                          streamSnapshot.data!.docs[index];
+                      ShoppingList shoppingList =
+                          ShoppingList.fromSnapshot(documentSnapshot);
+                      return ListTile(
+                        onTap: () => _pushCrudScreen(context, documentSnapshot),
+                        title: Text(shoppingList.title! +
+                            "  (" +
+                            shoppingList.items.length.toString() +
+                            ")"),
+                        trailing: IconButton(
+                          onPressed: () => _deleteList(shoppingList.listID!),
+                          icon: const Icon(Icons.delete),
+                        ),
+                      );
+                    }),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
