@@ -28,4 +28,8 @@ class ShoppingList {
   void addItem(String item) {
     items.add(item);
   }
+
+  void changeTitle(String title) {
+    this.title = title;
+  }
 }

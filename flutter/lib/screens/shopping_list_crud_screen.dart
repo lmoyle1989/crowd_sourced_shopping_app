@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crowd_sourced_shopping_app/models/shopping_list.dart';
-import 'package:flutter/material.dart';
 
 class ShoppingListCrudScreen extends StatefulWidget {
   final DocumentSnapshot? documentSnapshot;
@@ -20,6 +20,8 @@ class ShoppingListCrudScreen extends StatefulWidget {
 class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
   late ShoppingList shoppingList;
 
+  final TextEditingController _stringEditController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -36,9 +38,76 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
     setState(() {});
   }
 
-  void _addItem(ShoppingList shoppingList, String item) {
-    shoppingList.addItem(item);
-    setState(() {});
+  void _addItem(ShoppingList shoppingList) {
+    _stringEditController.text = '';
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+              top: 20,
+              left: 20,
+              right: 20,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                autofocus: true,
+                controller: _stringEditController,
+              ),
+              ElevatedButton(
+                child: const Text('Add Item'),
+                onPressed: () {
+                  shoppingList.addItem(_stringEditController.text);
+                  _stringEditController.text = '';
+                  Navigator.of(context).pop();
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _editListTitle(ShoppingList shoppingList) {
+    _stringEditController.text = shoppingList.title as String;
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+              top: 20,
+              left: 20,
+              right: 20,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                autofocus: true,
+                controller: _stringEditController,
+              ),
+              ElevatedButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  shoppingList.changeTitle(_stringEditController.text);
+                  _stringEditController.text = '';
+                  Navigator.of(context).pop();
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _saveChanges(ShoppingList shoppingList) async {
@@ -51,6 +120,17 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
           .add({'title': shoppingList.title, 'items': shoppingList.items});
     }
     Navigator.of(context).pop();
+  }
+
+  void _postList(ShoppingList shoppingList) async {
+    if (shoppingList.listID != null) {
+      await widget._shoppingLists
+          .doc(shoppingList.listID)
+          .update({'title': shoppingList.title, 'items': shoppingList.items});
+    } else {
+      await widget._shoppingLists
+          .add({'title': shoppingList.title, 'items': shoppingList.items});
+    }
   }
 
   @override
@@ -66,13 +146,25 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
             title: Text(
               shoppingList.title!.toUpperCase(),
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
               ),
             ),
-            trailing: IconButton(
-              onPressed: null,
-              icon: const Icon(Icons.edit),
+            trailing: SizedBox(
+              width: 100,
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () => _editListTitle(shoppingList),
+                    icon: const Icon(Icons.edit),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () => _addItem(shoppingList),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(
@@ -83,6 +175,7 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
               itemCount: shoppingList.items.length,
               itemBuilder: (context, index) {
                 return ListTile(
+                  visualDensity: const VisualDensity(vertical: -3),
                   title: Text(shoppingList.items[index]),
                   trailing: IconButton(
                     onPressed: () => _deleteItem(shoppingList, index),
@@ -99,12 +192,12 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
                 onPressed: () => _saveChanges(shoppingList),
                 child: const Text("Save Changes"),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 50,
               ),
               ElevatedButton(
-                onPressed: null,
-                child: Text("Add New Item"),
+                onPressed: () => _postList(shoppingList),
+                child: const Text("Find Best Store"),
               ),
             ],
           )
