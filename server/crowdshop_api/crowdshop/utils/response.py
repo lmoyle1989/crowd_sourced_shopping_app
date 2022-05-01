@@ -8,6 +8,6 @@ def generate_response(status: int, data: dict = None, error=None,
 
     res.status = status
     if data:
-        res.response = json.dumps(data)
+        res.data = json.dumps(data)
 
     return res

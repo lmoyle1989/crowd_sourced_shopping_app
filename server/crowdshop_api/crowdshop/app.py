@@ -39,6 +39,7 @@ def reg_blueprint(app):
     app.register_blueprint(login_routes.bp)
     app.register_blueprint(deals_routes.bp)
 
+
 def reg_errors(app):
     app.register_error_handler(404, reroute)
 

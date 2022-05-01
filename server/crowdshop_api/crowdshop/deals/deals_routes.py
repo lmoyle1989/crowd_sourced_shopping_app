@@ -3,7 +3,7 @@ from flask import Blueprint, request
 bp = Blueprint('deals', __name__, url_prefix='/deals')
 
 
-@bp.route('', methods=["GET"])
+@bp.route('', methods=["POST"])
 def find_deal():
     # query to get all uploads with specific tags according to shopping list
     # based on a 25 mile radius of stores lat lon

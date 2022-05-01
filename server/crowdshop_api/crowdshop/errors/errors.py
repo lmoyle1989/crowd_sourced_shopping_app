@@ -1,4 +1,4 @@
 
 def reroute(e):
-    return 'route not available', 404
+    return 'this resource was not found', 404
 
