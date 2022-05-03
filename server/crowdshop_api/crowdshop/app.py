@@ -4,12 +4,12 @@ from crowdshop.auth import login_routes, jwt
 from config import config
 from db import db
 from crowdshop.errors.errors import reroute
+from crowdshop.deals import deals_routes
 from db.users import Users
 from db.stores import Stores
 from db.uploads import Uploads
 from db.tags import Tags
 from db.tags_uploads import TagsUploads
-from crowdshop.deals import deals_routes
 
 
 def init_app(config_type=None):
@@ -30,7 +30,6 @@ def init_app(config_type=None):
     # create all tables
     with app.app_context():
         db.create_all()
-
     return app
 
 
@@ -42,6 +41,3 @@ def reg_blueprint(app):
 
 def reg_errors(app):
     app.register_error_handler(404, reroute)
-
-
-

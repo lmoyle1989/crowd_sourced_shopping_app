@@ -12,7 +12,7 @@ class Users(db.Model):
     user_rank = db.Column(db.String(60), nullable=True)
 
     # for relationships
-    uploads = db.relationship('Uploads', backref='user', lazy=True)
+    uploads = db.relationship('Uploads', backref='users', lazy=True)
 
     def __init__(self, first_name, last_name, password, email, upload_count=0,
                  user_rank='starter'):
