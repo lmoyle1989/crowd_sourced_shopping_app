@@ -57,7 +57,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   TextFieldWidget(
                     controller: _barcode, 
                     fieldText: 'Barcode number', 
-                    validator: tagsValidate, 
+                    validator: barcodeValidate, 
                     contWidth: 0.5,
                   ),
                   Padding(

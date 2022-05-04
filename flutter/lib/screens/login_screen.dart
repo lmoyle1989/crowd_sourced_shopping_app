@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: OutlinedButton(
-                  child: const Text('login'),
+                  child: const Text('Login'),
                   onPressed: () {
                     //_formKey.currentState!.validate();
                     Navigator.of(context).pushNamed(
@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.of(context).pushNamed('register');
                   },
-                  child: const Text('register')))
+                  child: const Text('Register')))
             ])));
   }
 
