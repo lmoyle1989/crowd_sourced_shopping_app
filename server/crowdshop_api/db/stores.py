@@ -19,4 +19,12 @@ class Stores(db.Model):
         self.latitude = latitude
         self.longitude = longitude
 
-    
+    def get_dict_repr(self):
+        dictionary = {
+            "id": self.id,
+            "name": self.name,
+            "address": self.address,
+            "latitude": self.latitude,
+            "longitude": self.longitude
+        }
+        return dictionary
