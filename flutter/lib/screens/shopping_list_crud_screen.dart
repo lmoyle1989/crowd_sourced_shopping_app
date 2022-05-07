@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crowd_sourced_shopping_app/models/shopping_list.dart';
+import 'package:crowd_sourced_shopping_app/screens/deals_response_screen.dart';
 
 class ShoppingListCrudScreen extends StatefulWidget {
   final DocumentSnapshot? documentSnapshot;
@@ -122,7 +123,7 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
     Navigator.of(context).pop();
   }
 
-  void _postList(ShoppingList shoppingList) async {
+  void _pushResponseScreen(ShoppingList shoppingList) async {
     if (shoppingList.listID != null) {
       await widget._shoppingLists
           .doc(shoppingList.listID)
@@ -131,6 +132,8 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
       await widget._shoppingLists
           .add({'title': shoppingList.title, 'items': shoppingList.items});
     }
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => DealsResponseScreen(shoppingList: shoppingList)));
   }
 
   @override
@@ -196,7 +199,7 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
                 width: 50,
               ),
               ElevatedButton(
-                onPressed: () => _postList(shoppingList),
+                onPressed: () => _pushResponseScreen(shoppingList),
                 child: const Text("Find Best Store"),
               ),
             ],
