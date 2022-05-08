@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ShoppingList {
   String? listID;
   String? title;
   List<String> items;
+  double? latitude;
+  double? longitude;
 
   ShoppingList({
     this.listID,
@@ -17,6 +21,15 @@ class ShoppingList {
       title: documentSnapshot['title'],
       items: List<String>.from(documentSnapshot['items']),
     );
+  }
+
+  Map toMap() {
+    var json = <String, dynamic>{};
+    json["title"] = title;
+    json["items"] = items;
+    json["latitude"] = latitude;
+    json["longitude"] = longitude;
+    return json;
   }
 
   void deleteItem(int index) {
