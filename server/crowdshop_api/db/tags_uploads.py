@@ -9,3 +9,6 @@ class TagsUploads(db.Model):
     tags_id = db.Column(db.Integer, db.ForeignKey('uploads.id'),
                         nullable=False)
 
+    def __init__(self, ui, ti):
+        self.upload_id = ui
+        self.tags_id = ti
