@@ -10,9 +10,17 @@ bp = Blueprint('stores', __name__, url_prefix='/stores')
 @bp.route('', methods=["GET"])
 def get_store_by_name():
 
-    name = request.args["name"]
+    name = request.args.get("name", "")
     lat = request.args["latitude"]
     lon = request.args["longitude"]
+
+    # - exists
+    if lat.find('-') != -1:
+        # trim to include -
+        lat = lat[:4]
+    if lon.find('-') != -1:
+        # trim to include -
+        lon = lon[:5]
     store_query = Stores.query.filter(
         and_(
             Stores.name.like(name+'%'),
