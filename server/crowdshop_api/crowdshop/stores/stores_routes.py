@@ -18,9 +18,13 @@ def get_store_by_name():
     if lat.find('-') != -1:
         # trim to include -
         lat = lat[:4]
+    else:
+        lat = lat[:3]
     if lon.find('-') != -1:
         # trim to include -
         lon = lon[:5]
+    else:
+        lon = lon[:4]
     store_query = Stores.query.filter(
         and_(
             Stores.name.like(name+'%'),
