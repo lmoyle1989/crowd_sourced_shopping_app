@@ -16,7 +16,10 @@ class Uploads(db.Model):
     tag_upload_relationship = db.relationship('TagsUploads',
                                               backref='uploads', lazy=True)
 
-    def __init__(self, price, upload_date, on_sale, barcode):
+    def __init__(self, price, upload_date, on_sale, barcode, user_id,
+                 store_id):
+        self.user_id = user_id
+        self.store_id = store_id
         self.price = price
         self.upload_date = upload_date
         self.on_sale = on_sale
