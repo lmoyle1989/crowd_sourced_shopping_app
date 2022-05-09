@@ -27,8 +27,7 @@ class CrowdFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: 
-      Container(
+      child: Container(
         padding: const EdgeInsets.all(6),
         width: MediaQuery.of(context).size.width * (contWidth ?? 0.75),
         child: TextFormField(
