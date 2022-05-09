@@ -22,40 +22,46 @@ class _LoginPageState extends State<LoginPage> {
       body: Form(
         key: _formKey,
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              CrowdFormField(
-                controller: _email, 
-                fieldText: 'Email', 
-                validator: emailValidate,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              CrowdFormField(
-                controller: _password, 
-                fieldText: 'Password',  
-                validator: passwordValidate,
-                isObscure: true,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(5),
-                child: OutlinedButton(
-                  child: const Text('Login'),
-                  onPressed: () {
-                    //_formKey.currentState!.validate();
-                    Navigator.of(context).pushNamed(
-                      'main_tab_controller'); //placeholder until we get login working with a post request
-                  },
-                )),
-              const Text('- or -'),
-              Padding(
-                padding: const EdgeInsets.all(5),
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('register');
-                  },
-                  child: const Text('Register')))
-            ])));
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            CrowdFormField(
+              controller: _email, 
+              fieldText: 'Email', 
+              validator: emailValidate,
+              keyboardType: TextInputType.emailAddress,
+            ),
+            CrowdFormField(
+              controller: _password, 
+              fieldText: 'Password',  
+              validator: passwordValidate,
+              isObscure: true,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: OutlinedButton(
+                child: const Text('Login'),
+                onPressed: () {
+                  //_formKey.currentState!.validate();
+                  Navigator.of(context).pushNamed(
+                    'main_tab_controller'); //placeholder until we get login working with a post request
+                },
+              )
+            ),
+            const Text('- or -'),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('register');
+                },
+                child: const Text('Register')
+              )
+            )
+          ]
+        )
+      )
+    );
   }
 
   //validators
