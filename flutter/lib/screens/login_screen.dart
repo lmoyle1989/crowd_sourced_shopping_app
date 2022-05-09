@@ -25,13 +25,13 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _email, 
                 fieldText: 'Email', 
                 validator: emailValidate,
                 keyboardType: TextInputType.emailAddress,
               ),
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _password, 
                 fieldText: 'Password',  
                 validator: passwordValidate,
