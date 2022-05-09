@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-//import '/components/text_form_field.dart';
+import '/components/text_form_field.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({Key? key}) : super(key: key);
@@ -12,93 +12,99 @@ class UploadScreen extends StatefulWidget {
 
 class _UploadScreenState extends State<UploadScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _price = TextEditingController();
+  final TextEditingController _barcode = TextEditingController();
+  final TextEditingController _tags= TextEditingController();
   bool isChecked = false;
   final List<Map<String, String>> _storeOptions = [
     {"name": "safeway", "address": "1234"},
     {"name": "vons", "address": '9876'}
   ];
   String? autocompleteSelection;
-  String? selectedBardcode;
 
   @override
   Widget build(BuildContext context) {
     return Form(
-        key: _formKey,
-        child: Column(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Flexible(
-                      child: Padding(
-                          padding: const EdgeInsets.all(6),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                hintText: 'Price',
-                                border: OutlineInputBorder()),
-                            validator: priceValidate,
-                            keyboardType: TextInputType.number,
-                          ))),
-                  const SizedBox(width: 30),
-                  Flexible(
-                    child: Checkbox(
-                      value: isChecked,
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked = value!;
-                        });
-                      },
-                      side: const BorderSide(width: 1.5),
-                      splashRadius: 0,
-                    ),
-                  ),
-                  const Text(
-                    'On sale',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
+            children: [
+              CrowdFormField(
+                controller: _price, 
+                fieldText: 'Price', 
+                validator: priceValidate,
+                contWidth: 0.4,
+                keyboardType: TextInputType.number,
+                textAlignment: TextAlign.left,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Flexible(
-                      child: Padding(
-                          padding: const EdgeInsets.all(6),
-                          child: TextFormField(
-                              decoration: InputDecoration(
-                                  hintText: 'barcode',
-                                  border: const OutlineInputBorder(),
-                                  suffixIcon: IconButton(
-                                      onPressed: scanBarcode,
-                                      icon: const Icon(
-                                          Icons.camera_alt_outlined))),
-                              validator: barcodeValidate))),
-                ],
+              const SizedBox(width: 30),
+              Flexible(
+                child: Checkbox(
+                  value: isChecked,
+                  onChanged: (value) {
+                    setState(() {
+                      isChecked = value!;
+                    });
+                  },
+                  side: const BorderSide(width: 1.5),
+                  splashRadius: 0,
+                ),
               ),
+              const Text(
+                'On sale',
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
               Flexible(
-                  child: Padding(
-                      padding: const EdgeInsets.all(6),
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                            hintText: 'Tags', border: OutlineInputBorder()),
-                        validator: tagsValidate,
-                      ))),
-              Flexible(
-                  child: Padding(
-                      padding: const EdgeInsets.all(6), child: getStores())),
-              Flexible(
-                  child: Padding(
-                      padding: const EdgeInsets.all(6),
-                      child: OutlinedButton(
-                        child: const Text('Upload'),
-                        onPressed: () {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          _formKey.currentState!.validate();
-                        },
-                      ))),
-            ]));
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: TextFormField(
+                    controller: _barcode,
+                    decoration: InputDecoration(
+                      hintText: 'Barcode',
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        onPressed: scanBarcode,
+                        icon: const Icon(
+                            Icons.camera_alt_outlined))),
+                    validator: barcodeValidate
+                  )
+                )
+              ),
+            ],
+          ),
+          CrowdFormField(
+            controller: _tags,
+            fieldText: 'Tags',
+            validator: tagsValidate,
+            textAlignment: TextAlign.left,
+            contWidth: 1.0,
+            autocorrect: true,
+          ),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.all(6), child: getStores())),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.all(6),
+              child: OutlinedButton(
+                child: const Text('Upload'),
+                onPressed: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  _formKey.currentState!.validate();
+                },
+              ))),
+        ]
+      )
+    );
   }
 
   Future<void> scanBarcode() async {
@@ -113,7 +119,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
     if (!mounted) return;
     setState(() {
-      selectedBardcode = barcode;
+      _barcode.text = barcode;
     });
   }
 

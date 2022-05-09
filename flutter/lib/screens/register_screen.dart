@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
-import '/components/text_form_field.dart';
+import 'package:crowd_sourced_shopping_app/components/text_form_field.dart';
+import 'package:crowd_sourced_shopping_app/models/user.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key? key}) : super(key: key);
@@ -35,31 +36,31 @@ class _RegisterPageState extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _firstname, 
                 fieldText: 'First Name', 
                 errorHeight: 0,
                 validator: nameValidate
               ),
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _lastname, 
                 fieldText: 'Last Name', 
                 errorHeight: 0,
                 validator: nameValidate
               ),
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _email, 
                 fieldText: 'Email', 
                 validator: emailValidate,
                 keyboardType: TextInputType.emailAddress,
               ),
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _password, 
                 fieldText: 'Password', 
                 validator: passwordValidate,
                 isObscure: true, 
               ),
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _passwordConfirm, 
                 fieldText: 'Confirm Password', 
                 validator: confirmPassValidate,
@@ -75,7 +76,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                 )
               ),
-          ])))));
+            ]
+          )
+        )
+      ))
+    );
   }
 
   //validators
