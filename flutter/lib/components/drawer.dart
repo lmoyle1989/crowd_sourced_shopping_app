@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:crowd_sourced_shopping_app/utilities/theme_settings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDrawer extends StatefulWidget {
   const UserDrawer({Key? key}) : super(key: key);
@@ -54,8 +55,11 @@ class _UserDrawerState extends State<UserDrawer> {
           ),
           ListTile(
             title: const Text('Log Out'),
-            onTap: () {
-
+            onTap: () async {
+              final SharedPreferences preferences = await SharedPreferences.getInstance();
+              preferences.remove('user_id');
+              preferences.remove('user_token');
+              Navigator.pushNamed(context, 'login');
             },
           )
         ]
