@@ -1,4 +1,3 @@
-import 'package:crowd_sourced_shopping_app/components/main_tab_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,8 +11,6 @@ class LoginPage extends StatefulWidget {
   static const String routeName = 'login';
   static const herokuUri =
       "https://crowd-sourced-shopping-cs467.herokuapp.com/";
-  static const devUri =
-      "http://10.0.2.2:8080";
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -52,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   FocusManager.instance.primaryFocus?.unfocus();
                   if(_formKey.currentState!.validate()) {
-                    testPost();
+                    sendPost();
                   }
                 },
               )
@@ -73,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void testPost() async {
+  void sendPost() async {
     final body = jsonEncode(<String, String>{
       'email': _email.text,
       'password': _password.text,
@@ -82,10 +79,10 @@ class _LoginPageState extends State<LoginPage> {
       'Content-Type': 'application/json; charset=UTF-8',
     };
     final http.Response apiResponse = await http.post(
-        Uri.parse(LoginPage.devUri + "/login"),
+        Uri.parse(LoginPage.herokuUri + "/login"),
         headers: headers,
         body: body);
-    print(apiResponse.body);
+
     if (apiResponse.statusCode == 201) {
       var decoded = jsonDecode(apiResponse.body) as Map<String, dynamic>;
       var token = decoded['user_token'];
@@ -102,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Logging you in...'), 
+        const SnackBar(content: Text('Error with login'), 
           duration: Duration(seconds: 1),),
       );
     }

@@ -11,8 +11,6 @@ class RegisterPage extends StatefulWidget {
   static const String routeName = 'register';
   static const herokuUri =
       "https://crowd-sourced-shopping-cs467.herokuapp.com/";
-  static const devUri =
-      "http://10.0.2.2:8080";
 
   @override
   _RegisterPageState createState() => _RegisterPageState();
@@ -79,7 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   onPressed: () {
                     FocusManager.instance.primaryFocus?.unfocus();
                     if (_formKey.currentState!.validate()) {
-                      testPost();
+                      sendPost();
                     }
                   },
                 )
@@ -91,7 +89,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void testPost() async {
+  void sendPost() async {
     final body = jsonEncode(<String, String>{
       'fn': _firstname.text,
       'ln': _lastname.text,
@@ -102,10 +100,10 @@ class _RegisterPageState extends State<RegisterPage> {
       'Content-Type': 'application/json; charset=UTF-8',
     };
     final http.Response apiResponse = await http.post(
-        Uri.parse(RegisterPage.devUri + "/users"),
+        Uri.parse(RegisterPage.herokuUri + "/users"),
         headers: headers,
         body: body);
-    // print(apiResponse.body);
+
     if (apiResponse.statusCode == 201) {
       var decode = jsonDecode(apiResponse.body) as Map<String, dynamic>;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -117,7 +115,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error with registration!'))
+        const SnackBar(content: Text('Error with registration'))
       );
     }
   }
