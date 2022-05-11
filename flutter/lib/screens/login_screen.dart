@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '/components/text_form_field.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
 
-  static const String routeName = '/';
+  static const String routeName = 'login';
+  static const herokuUri =
+      "https://crowd-sourced-shopping-cs467.herokuapp.com/";
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -42,9 +47,10 @@ class _LoginPageState extends State<LoginPage> {
               child: OutlinedButton(
                 child: const Text('Login'),
                 onPressed: () {
-                  //_formKey.currentState!.validate();
-                  Navigator.of(context).pushNamed(
-                    'main_tab_controller'); //placeholder until we get login working with a post request
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  if(_formKey.currentState!.validate()) {
+                    sendPost();
+                  }
                 },
               )
             ),
@@ -62,6 +68,41 @@ class _LoginPageState extends State<LoginPage> {
         )
       )
     );
+  }
+
+  void sendPost() async {
+    final body = jsonEncode(<String, String>{
+      'email': _email.text,
+      'password': _password.text,
+    });
+    final headers = <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    final http.Response apiResponse = await http.post(
+        Uri.parse(LoginPage.herokuUri + "/login"),
+        headers: headers,
+        body: body);
+
+    if (apiResponse.statusCode == 201) {
+      var decoded = jsonDecode(apiResponse.body) as Map<String, dynamic>;
+      var token = decoded['user_token'];
+      var userid = decoded['user_id'];
+      final SharedPreferences preferences = await SharedPreferences.getInstance();
+      preferences.setString('user_token', token);
+      preferences.setInt('user_id', userid);
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text('Logging you in...'), 
+      //     duration: Duration(seconds: 1),),
+      // );
+      // await Future.delayed(const Duration(seconds: 1), (){});
+      Navigator.of(context).pushNamed('main_tab_controller');
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error with login'), 
+          duration: Duration(seconds: 1),),
+      );
+    }
   }
 
   //validators
