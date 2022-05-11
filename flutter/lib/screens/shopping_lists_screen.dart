@@ -2,12 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crowd_sourced_shopping_app/models/shopping_list.dart';
 import 'package:crowd_sourced_shopping_app/screens/shopping_list_crud_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ShoppingListsScreen extends StatelessWidget {
+class ShoppingListsScreen extends StatefulWidget {
   ShoppingListsScreen({Key? key}) : super(key: key);
 
-  final CollectionReference _shoppingLists =
-      FirebaseFirestore.instance.collection('shopping_lists');
+  @override
+  State<ShoppingListsScreen> createState() => _ShoppingListsScreenState();
+}
+
+class _ShoppingListsScreenState extends State<ShoppingListsScreen> {
+  late CollectionReference _shoppingLists;
+  bool loading = true;
+
+  void _getUserFirebaseCollection() async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    int _userId = sharedPreferences.getInt('user_id') as int;
+    setState(() {
+      _shoppingLists = FirebaseFirestore.instance
+          .collection('users/' + _userId.toString() + '/shopping_lists');
+      loading = false;
+    });
+  }
 
   Future<void> _deleteList(String listID) async {
     await _shoppingLists.doc(listID).delete();
@@ -20,17 +37,29 @@ class ShoppingListsScreen extends StatelessWidget {
     if (documentSnapshot == null) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => ShoppingListCrudScreen(documentSnapshot: null),
+          builder: (context) => ShoppingListCrudScreen(
+            documentSnapshot: null,
+            shoppingLists: _shoppingLists,
+          ),
         ),
       );
     } else {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) =>
-              ShoppingListCrudScreen(documentSnapshot: documentSnapshot),
+          builder: (context) => ShoppingListCrudScreen(
+            documentSnapshot: documentSnapshot,
+            shoppingLists: _shoppingLists,
+          ),
         ),
       );
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserFirebaseCollection();
+    setState(() {});
   }
 
   @override
@@ -43,67 +72,79 @@ class ShoppingListsScreen extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ),
-      body: Column(
-        children: [
-          const ListTile(
-            title: Text(
-              "YOUR SHOPPING LISTS",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
+      body: Builder(builder: (BuildContext context) {
+        if (loading) {
+          return const Center(
+            child: SizedBox(
+              height: 100,
+              width: 100,
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        return Column(
+          children: [
+            const ListTile(
+              title: Text(
+                "YOUR SHOPPING LISTS",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: StreamBuilder(
-              stream: _shoppingLists.snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                if (!streamSnapshot.hasData) {
-                  return const Center(
-                    child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                } else {
-                  if (streamSnapshot.data!.docs.isEmpty) {
+            Expanded(
+              child: StreamBuilder(
+                stream: _shoppingLists.snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                  if (!streamSnapshot.hasData) {
                     return const Center(
                       child: SizedBox(
                         height: 100,
                         width: 100,
-                        child: Icon(Icons.shopping_bag),
+                        child: CircularProgressIndicator(),
                       ),
                     );
-                  }
-                  return ListView.builder(
-                    itemCount: streamSnapshot.data!.docs.length,
-                    itemBuilder: ((context, index) {
-                      DocumentSnapshot documentSnapshot =
-                          streamSnapshot.data!.docs[index];
-                      ShoppingList shoppingList =
-                          ShoppingList.fromSnapshot(documentSnapshot);
-                      return ListTile(
-                        onTap: () => _pushCrudScreen(context, documentSnapshot),
-                        title: Text(shoppingList.title! +
-                            "  (" +
-                            shoppingList.items.length.toString() +
-                            ")"),
-                        trailing: IconButton(
-                          onPressed: () => _deleteList(shoppingList.listID!),
-                          icon: const Icon(Icons.delete),
+                  } else {
+                    if (streamSnapshot.data!.docs.isEmpty) {
+                      return const Center(
+                        child: SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: Icon(Icons.shopping_bag),
                         ),
                       );
-                    }),
-                  );
-                }
-              },
+                    }
+                    return ListView.builder(
+                      itemCount: streamSnapshot.data!.docs.length,
+                      itemBuilder: ((context, index) {
+                        DocumentSnapshot documentSnapshot =
+                            streamSnapshot.data!.docs[index];
+                        ShoppingList shoppingList =
+                            ShoppingList.fromSnapshot(documentSnapshot);
+                        return ListTile(
+                          onTap: () =>
+                              _pushCrudScreen(context, documentSnapshot),
+                          title: Text(shoppingList.title! +
+                              "  (" +
+                              shoppingList.items.length.toString() +
+                              ")"),
+                          trailing: IconButton(
+                            onPressed: () => _deleteList(shoppingList.listID!),
+                            icon: const Icon(Icons.delete),
+                          ),
+                        );
+                      }),
+                    );
+                  }
+                },
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 }

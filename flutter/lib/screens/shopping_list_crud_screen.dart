@@ -6,12 +6,12 @@ import 'package:crowd_sourced_shopping_app/screens/deals_response_screen.dart';
 class ShoppingListCrudScreen extends StatefulWidget {
   final DocumentSnapshot? documentSnapshot;
 
-  final CollectionReference _shoppingLists =
-      FirebaseFirestore.instance.collection('shopping_lists');
+  final CollectionReference shoppingLists;
 
   ShoppingListCrudScreen({
     Key? key,
-    this.documentSnapshot,
+    required this.documentSnapshot,
+    required this.shoppingLists,
   }) : super(key: key);
 
   @override
@@ -113,11 +113,11 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
 
   void _saveChanges(ShoppingList shoppingList) async {
     if (shoppingList.listID != null) {
-      await widget._shoppingLists
+      await widget.shoppingLists
           .doc(shoppingList.listID)
           .update({'title': shoppingList.title, 'items': shoppingList.items});
     } else {
-      await widget._shoppingLists
+      await widget.shoppingLists
           .add({'title': shoppingList.title, 'items': shoppingList.items});
     }
     Navigator.of(context).pop();
@@ -125,11 +125,11 @@ class _ShoppingListCrudScreenState extends State<ShoppingListCrudScreen> {
 
   void _pushResponseScreen(ShoppingList shoppingList) async {
     if (shoppingList.listID != null) {
-      await widget._shoppingLists
+      await widget.shoppingLists
           .doc(shoppingList.listID)
           .update({'title': shoppingList.title, 'items': shoppingList.items});
     } else {
-      await widget._shoppingLists
+      await widget.shoppingLists
           .add({'title': shoppingList.title, 'items': shoppingList.items});
     }
     Navigator.of(context).push(MaterialPageRoute(
