@@ -1,37 +1,45 @@
-!#/bin/bash
+#!/bin/bash
 
 printf "\n\ndo you have sqlite installed? y/n\n"
 read USERIN
 
-sqlfiletar="sqlite-autoconf-3380200.tar.gz"
-sqlurl="https://www.sqlite.org/2022/"
-sqlfile="sqlite-autoconf-3380200"
+DBFILENAME="crowdshop_dev_db.db"
 
-if [[ "$USERIN" = "n" ]]
+if [[ "$USERIN" = "n" ]];
 then
   	printf "\nyou answered no, now downloading and installing sqlite\n\n"
 	brew install sqlite
 fi
 
-echo "making db file"
-touch crowdshop_dev_db.db
-crowdpath=$(echo $(readlink -f crowdshop_dev_db.db))
 
-mainpath=${crowdpath//////}
+if [[ ! -f $DBFILENAME ]]; then
+	printf "\nmaking db file\n"
+	touch crowdshop_dev_db.db
+else
+	printf "\ndb file already exists\n"
+fi
+
+crowdpath=$(echo $(readlink -f $DBFILENAME))
+mainpath=${crowdpath//\//\//}
 
 cd crowdshop_api
-echo "creating env file"
 
-python3 -m venv env
+if [[ ! -d "env" ]];
+then
+	printf "\ncreating env dir in $(pwd)\n\n"
+	python3 -m venv env
+else
+	printf "\nenv dir already exists\n\n"
+fi
+
+if [[ ! -f ".env.dev" ]];
+then
+	printf "creating .env.dev file\n"
+	printf "SQLALCHEMY_DATABASE_URI=sqlite://$mainpath\nSQLALCHEMY_TRACK_MODIFICATIONS=False\nFLASK_ENV=development\nPYTHONPATH=crowdshop_api\n" > .env.dev
+else
+	printf ".env.dev already exists\n\n"
+fi
+
 source env/bin/activate
-
-
-export SQLALCHEMY_DATABASE_URI="sqlite://$mainpath"
-export SQLALCHEMY_TRACK_MODIFICATIONS=False
-export FLASK_ENV=development
-
-pip install -r requirements.txt
-
+python3 -m pip install -r requirements.txt
 python3 run.py
-
-exit 0

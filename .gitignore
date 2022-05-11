@@ -5,4 +5,5 @@ env/
 __pycache__/
 server/runpy
 venv/
-
+*.pyc
+*.env.dev

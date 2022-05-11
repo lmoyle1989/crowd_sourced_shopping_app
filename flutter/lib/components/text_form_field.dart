@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TextFieldWidget extends StatelessWidget {
+class CrowdFormField extends StatelessWidget {
   final TextEditingController controller;
   final String fieldText;
   final double? errorHeight;
@@ -8,8 +8,10 @@ class TextFieldWidget extends StatelessWidget {
   final bool? isObscure;
   final TextInputType? keyboardType;
   final double? contWidth;
+  final TextAlign? textAlignment;
+  final bool? autocorrect;
 
-  const TextFieldWidget({
+  const CrowdFormField({
     Key? key, 
     required this.controller,
     required this.fieldText,
@@ -17,26 +19,26 @@ class TextFieldWidget extends StatelessWidget {
     this.errorHeight,
     this.isObscure,
     this.keyboardType,
-    this.contWidth
+    this.contWidth,
+    this.textAlignment,
+    this.autocorrect
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: 
-      Container(
-        padding: const EdgeInsets.all(5),
+      child: Container(
+        padding: const EdgeInsets.all(6),
         width: MediaQuery.of(context).size.width * (contWidth ?? 0.75),
         child: TextFormField(
           controller: controller,
           obscureText: isObscure ?? false,
-          textAlign: TextAlign.center,
+          textAlign: textAlignment ?? TextAlign.center,
           enableSuggestions: false,
-          autocorrect: false,
+          autocorrect: autocorrect ?? false,
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
             hintText: fieldText,
-            isDense: true,
             errorStyle: TextStyle(height: errorHeight ?? 0.75)
           ),
           validator: validator,

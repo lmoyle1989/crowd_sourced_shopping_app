@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
-import '/components/text_form_field.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:crowd_sourced_shopping_app/components/text_form_field.dart';
+import 'package:crowd_sourced_shopping_app/models/user.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key? key}) : super(key: key);
 
   static const String routeName = 'register';
+  static const herokuUri =
+      "https://crowd-sourced-shopping-cs467.herokuapp.com/";
 
   @override
   _RegisterPageState createState() => _RegisterPageState();
@@ -35,31 +40,31 @@ class _RegisterPageState extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _firstname, 
                 fieldText: 'First Name', 
                 errorHeight: 0,
                 validator: nameValidate
               ),
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _lastname, 
                 fieldText: 'Last Name', 
                 errorHeight: 0,
                 validator: nameValidate
               ),
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _email, 
                 fieldText: 'Email', 
                 validator: emailValidate,
                 keyboardType: TextInputType.emailAddress,
               ),
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _password, 
                 fieldText: 'Password', 
                 validator: passwordValidate,
                 isObscure: true, 
               ),
-              TextFieldWidget(
+              CrowdFormField(
                 controller: _passwordConfirm, 
                 fieldText: 'Confirm Password', 
                 validator: confirmPassValidate,
@@ -71,11 +76,48 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: const Text('Create Account'),
                   onPressed: () {
                     FocusManager.instance.primaryFocus?.unfocus();
-                    _formKey.currentState!.validate();
+                    if (_formKey.currentState!.validate()) {
+                      sendPost();
+                    }
                   },
                 )
               ),
-          ])))));
+            ]
+          )
+        )
+      ))
+    );
+  }
+
+  void sendPost() async {
+    final body = jsonEncode(<String, String>{
+      'fn': _firstname.text,
+      'ln': _lastname.text,
+      'email': _email.text,
+      'password': _password.text,
+    });
+    final headers = <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    final http.Response apiResponse = await http.post(
+        Uri.parse(RegisterPage.herokuUri + "/users"),
+        headers: headers,
+        body: body);
+
+    if (apiResponse.statusCode == 201) {
+      var decode = jsonDecode(apiResponse.body) as Map<String, dynamic>;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Successful registration!'),
+        duration: Duration(seconds: 1),)
+      );
+      await Future.delayed(const Duration(seconds: 1), (){});
+      Navigator.of(context).pop();
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error with registration'))
+      );
+    }
   }
 
   //validators

@@ -3,6 +3,7 @@ import 'package:crowd_sourced_shopping_app/screens/live_feed_screen.dart';
 import 'package:crowd_sourced_shopping_app/screens/shopping_lists_screen.dart';
 import 'package:crowd_sourced_shopping_app/screens/upload_screen.dart';
 import 'package:crowd_sourced_shopping_app/models/user.dart';
+import 'package:crowd_sourced_shopping_app/components/drawer.dart';
 
 class MainTabController extends StatelessWidget {
   //final User current_user; // passing current_user down through the widget tree constructors is probably not the best way to do this but keep this here for now
@@ -41,7 +42,14 @@ class MainTabController extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10)),
           ),
           centerTitle: true,
+          actions: <Widget>[
+            Builder(builder: (context) => IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () => Scaffold.of(context).openEndDrawer()), 
+            )
+          ]
         ),
+        endDrawer: UserDrawer(),
         body: TabBarView(
           children: _screens,
         ),
