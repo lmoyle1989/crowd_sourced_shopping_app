@@ -19,9 +19,14 @@ class _ShoppingListsScreenState extends State<ShoppingListsScreen> {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     int _userId = sharedPreferences.getInt('user_id') as int;
+    FirebaseFirestore.instance
+        .collection('users/')
+        .doc(_userId.toString())
+        .set({}, SetOptions(merge: true));
+    CollectionReference userLists = FirebaseFirestore.instance
+        .collection('users/' + _userId.toString() + '/shopping_lists');
     setState(() {
-      _shoppingLists = FirebaseFirestore.instance
-          .collection('users/' + _userId.toString() + '/shopping_lists');
+      _shoppingLists = userLists;
       loading = false;
     });
   }
