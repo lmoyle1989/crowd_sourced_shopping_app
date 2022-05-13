@@ -11,6 +11,8 @@ class RegisterPage extends StatefulWidget {
   static const String routeName = 'register';
   static const herokuUri =
       "https://crowd-sourced-shopping-cs467.herokuapp.com/";
+  static const devUri =
+      "http://10.0.2.2:8080";
 
   @override
   _RegisterPageState createState() => _RegisterPageState();
@@ -74,9 +76,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 padding: const EdgeInsets.all(5),
                 child: OutlinedButton(
                   child: const Text('Create Account'),
-                  onPressed: () {
+                  onPressed: () async {
                     FocusManager.instance.primaryFocus?.unfocus();
                     if (_formKey.currentState!.validate()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Registering...'),
+                        duration: Duration(seconds: 100))
+                      );
                       sendPost();
                     }
                   },
@@ -96,22 +102,30 @@ class _RegisterPageState extends State<RegisterPage> {
       'email': _email.text,
       'password': _password.text,
     });
+
     final headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     };
+
     final http.Response apiResponse = await http.post(
-        Uri.parse(RegisterPage.herokuUri + "/users"),
+        Uri.parse(RegisterPage.devUri + "/users"),
         headers: headers,
         body: body);
+    
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
     if (apiResponse.statusCode == 201) {
       var decode = jsonDecode(apiResponse.body) as Map<String, dynamic>;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Successful registration!'),
-        duration: Duration(seconds: 1),)
+        duration: Duration(seconds: 2),)
       );
-      await Future.delayed(const Duration(seconds: 1), (){});
       Navigator.of(context).pop();
+    }
+    else if (apiResponse.statusCode == 409) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Email already registered'))
+      );
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(

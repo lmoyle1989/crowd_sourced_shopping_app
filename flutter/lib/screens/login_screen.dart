@@ -11,6 +11,8 @@ class LoginPage extends StatefulWidget {
   static const String routeName = 'login';
   static const herokuUri =
       "https://crowd-sourced-shopping-cs467.herokuapp.com/";
+  static const devUri =
+      "http://10.0.2.2:8080";
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -49,6 +51,10 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   FocusManager.instance.primaryFocus?.unfocus();
                   if(_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Logging in...'),
+                      duration: Duration(seconds: 100))
+                    );
                     sendPost();
                   }
                 },
@@ -79,9 +85,11 @@ class _LoginPageState extends State<LoginPage> {
       'Content-Type': 'application/json; charset=UTF-8',
     };
     final http.Response apiResponse = await http.post(
-        Uri.parse(LoginPage.herokuUri + "/login"),
+        Uri.parse(LoginPage.devUri + "/login"),
         headers: headers,
         body: body);
+
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
     if (apiResponse.statusCode == 201) {
       var decoded = jsonDecode(apiResponse.body) as Map<String, dynamic>;
@@ -90,17 +98,11 @@ class _LoginPageState extends State<LoginPage> {
       final SharedPreferences preferences = await SharedPreferences.getInstance();
       preferences.setString('user_token', token);
       preferences.setInt('user_id', userid);
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(content: Text('Logging you in...'), 
-      //     duration: Duration(seconds: 1),),
-      // );
-      // await Future.delayed(const Duration(seconds: 1), (){});
       Navigator.of(context).pushNamed('main_tab_controller');
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error with login'), 
-          duration: Duration(seconds: 1),),
+        const SnackBar(content: Text('Invalid credentials')),
       );
     }
   }
