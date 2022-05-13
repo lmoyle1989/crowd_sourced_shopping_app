@@ -49,6 +49,10 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   FocusManager.instance.primaryFocus?.unfocus();
                   if(_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Logging in...'),
+                      duration: Duration(seconds: 100))
+                    );
                     sendPost();
                   }
                 },
@@ -83,6 +87,8 @@ class _LoginPageState extends State<LoginPage> {
         headers: headers,
         body: body);
 
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
     if (apiResponse.statusCode == 201) {
       var decoded = jsonDecode(apiResponse.body) as Map<String, dynamic>;
       var token = decoded['user_token'];
@@ -90,17 +96,11 @@ class _LoginPageState extends State<LoginPage> {
       final SharedPreferences preferences = await SharedPreferences.getInstance();
       preferences.setString('user_token', token);
       preferences.setInt('user_id', userid);
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(content: Text('Logging you in...'), 
-      //     duration: Duration(seconds: 1),),
-      // );
-      // await Future.delayed(const Duration(seconds: 1), (){});
       Navigator.of(context).pushNamed('main_tab_controller');
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error with login'), 
-          duration: Duration(seconds: 1),),
+        const SnackBar(content: Text('Invalid credentials')),
       );
     }
   }

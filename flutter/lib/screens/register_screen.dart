@@ -74,9 +74,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 padding: const EdgeInsets.all(5),
                 child: OutlinedButton(
                   child: const Text('Create Account'),
-                  onPressed: () {
+                  onPressed: () async {
                     FocusManager.instance.primaryFocus?.unfocus();
                     if (_formKey.currentState!.validate()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Registering...'),
+                        duration: Duration(seconds: 100))
+                      );
                       sendPost();
                     }
                   },
@@ -103,15 +107,21 @@ class _RegisterPageState extends State<RegisterPage> {
         Uri.parse(RegisterPage.herokuUri + "/users"),
         headers: headers,
         body: body);
+    
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
     if (apiResponse.statusCode == 201) {
       var decode = jsonDecode(apiResponse.body) as Map<String, dynamic>;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Successful registration!'),
-        duration: Duration(seconds: 1),)
+        duration: Duration(seconds: 2),)
       );
-      await Future.delayed(const Duration(seconds: 1), (){});
       Navigator.of(context).pop();
+    }
+    else if (apiResponse.statusCode == 409) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Email already registered'))
+      );
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(
