@@ -11,8 +11,6 @@ class LoginPage extends StatefulWidget {
   static const String routeName = 'login';
   static const herokuUri =
       "https://crowd-sourced-shopping-cs467.herokuapp.com/";
-  static const devUri =
-      "http://10.0.2.2:8080";
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -85,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
       'Content-Type': 'application/json; charset=UTF-8',
     };
     final http.Response apiResponse = await http.post(
-        Uri.parse(LoginPage.devUri + "/login"),
+        Uri.parse(LoginPage.herokuUri + "/login"),
         headers: headers,
         body: body);
 
