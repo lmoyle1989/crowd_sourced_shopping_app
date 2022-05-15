@@ -20,3 +20,14 @@ class Users(db.Model):
         self.uploads_count = upload_count
         self.user_rank = user_rank
 
+    def get_dict_repr(self):
+        dictionary = {
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "uploads_count": self.uploads_count,
+            "user_rank": self.user_rank
+        }
+        return dictionary
+

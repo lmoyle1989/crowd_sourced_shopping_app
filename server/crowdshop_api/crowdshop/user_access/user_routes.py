@@ -38,5 +38,7 @@ def user_upload(user_id):
 
 @bp.route('/<user_id>', methods=['GET'])
 def user_profile(user_id):
-    user = Users.query.filter_by(id=user_id).first()
-    return generate_response(200, data=jsonify(user))
+    user_query = Users.query.filter_by(id=user_id).first()
+    user_json = user_query.get_dict_repr()
+    data = json.dumps(user_json)
+    return data, 200
