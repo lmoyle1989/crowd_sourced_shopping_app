@@ -9,10 +9,6 @@ class Stores(db.Model):
     latitude = db.Column(db.FLOAT(precision=32), nullable=False)
     longitude = db.Column(db.FLOAT(precision=32), nullable=False)
 
-    # for relationships
-    store_relationship = db.relationship('Uploads', backref='stores',
-                                         lazy=True)
-
     def __init__(self, name, address, latitude, longitude):
         self.name = name
         self.address = address
