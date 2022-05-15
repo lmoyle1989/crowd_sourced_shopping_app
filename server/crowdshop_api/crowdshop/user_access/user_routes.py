@@ -1,4 +1,3 @@
-from crypt import methods
 from flask import Blueprint, jsonify, request, url_for, current_app
 from crowdshop.auth import jwt_required
 from db.users import Users
