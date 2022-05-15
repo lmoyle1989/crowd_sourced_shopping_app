@@ -3,15 +3,29 @@ import os.path
 
 from db import db as db
 from db.stores import Stores
+from db.uploads import Uploads
+from db.tags import Tags
+from db.tags_uploads import TagsUploads
 from crowdshop.app import init_app
+from datetime import datetime
+
+
+def get_path(fname):
+    return os.path.join(os.path.dirname(__file__), fname)
 
 
 def drop_all():
     db.drop_all()
 
 
+def make_all():
+    load_stores_data()
+    load_uploads()
+
+
 def load_stores_data():
-    path = os.path.join(os.path.dirname(__file__), 'store-data.csv')
+    path = get_path('store-data.csv')
+
     with open(path, 'r') as stores:
         read_data = csv.DictReader(stores, delimiter=',')
         all_stores =[
@@ -25,6 +39,39 @@ def load_stores_data():
 
     db.session.bulk_save_objects(all_stores)
     db.session.commit()
+
+
+def load_uploads():
+    path = get_path('uploads-data.csv')
+
+    with open(path, 'r') as uploads:
+        read_data = csv.DictReader(uploads, delimiter=',')
+        for row in read_data:
+            tag_ids = make_tag_instances(row["tags"])
+            upload = Uploads(
+                row["price"],
+                datetime.strptime(row["date"], "%m/%d/%Y"),
+                bool(row["sale"]),
+                row["barcode"],
+                row["userid"],
+                row["storeid"]
+            )
+            make_tag_uploads_instances(tag_ids, upload)
+            db.session.add(upload)
+            db.session.commit()
+
+
+def make_tag_instances(tags):
+    """ create tag instances and return list of tags """
+    tags = tags.split(',')
+    tag_entries = [Tags(t) for t in tags]
+    return tag_entries
+
+
+def make_tag_uploads_instances(tag_ids, upload):
+    """ add tag to upload instance """
+    for ti in tag_ids:
+        upload.tag_upload_relationship.append(ti)
 
 
 if __name__ == '__main__':

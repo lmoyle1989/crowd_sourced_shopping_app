@@ -1,6 +1,6 @@
 import pytest
 from crowdshop.app import init_app
-from tests.load_test_data import load_stores_data, drop_all
+from tests.load_test_data import make_all, drop_all
 
 
 @pytest.fixture(scope="function")
@@ -12,7 +12,7 @@ def app():
         }
     )
     with app.app_context():
-        load_stores_data()
+        make_all()
 
     yield app
 

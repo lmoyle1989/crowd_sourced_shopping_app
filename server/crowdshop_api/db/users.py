@@ -11,9 +11,6 @@ class Users(db.Model):
     uploads_count = db.Column(db.Integer)
     user_rank = db.Column(db.String(60), nullable=True)
 
-    # for relationships
-    uploads = db.relationship('Uploads', backref='users', lazy=True)
-
     def __init__(self, first_name, last_name, password, email, upload_count=0,
                  user_rank='starter'):
         self.first_name = first_name

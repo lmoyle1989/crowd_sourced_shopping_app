@@ -16,5 +16,5 @@ def find_deal():
     # calculate total number of products on sale
     # calculate average days old
     # prioritize -- cheapest, newest, most on sale
-    return {"in progress": "route implementation in progress"}, 400
+    return {"route implementation in progress"}, 400
 
