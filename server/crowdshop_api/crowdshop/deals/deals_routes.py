@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from crowdshop.deals.dealrequests import DealInquirer
 
 bp = Blueprint('deals', __name__, url_prefix='/deals')
 
@@ -16,5 +17,6 @@ def find_deal():
     # calculate total number of products on sale
     # calculate average days old
     # prioritize -- cheapest, newest, most on sale
+
     return {"route implementation in progress"}, 400
 
