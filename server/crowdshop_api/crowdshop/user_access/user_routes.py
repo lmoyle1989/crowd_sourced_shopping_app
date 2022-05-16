@@ -3,6 +3,7 @@ from crowdshop.auth import jwt_required
 from db.users import Users
 from db import db
 from crowdshop.utils.response import generate_response
+import json
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 
@@ -34,4 +35,9 @@ def user_register():
 def user_upload(user_id):
     return 'jwt auth working', 200
 
-
+@bp.route('/<user_id>', methods=['GET'])
+def user_profile(user_id):
+    user_query = Users.query.filter_by(id=user_id).first()
+    user_json = user_query.get_dict_repr()
+    data = json.dumps(user_json)
+    return data, 200
