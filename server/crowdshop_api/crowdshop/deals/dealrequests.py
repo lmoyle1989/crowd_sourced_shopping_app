@@ -1,10 +1,11 @@
 # data access object for deals
 from geopy import distance
+
+import db
 from db.stores import Stores
 from db.uploads import Uploads
 from db.tags import Tags
 from db.tags_uploads import TagsUploads
-
 from sqlalchemy import or_, and_
 
 
@@ -49,7 +50,15 @@ class DealInquirer(object):
             .join(Uploads, isouter=True) \
             .join(TagsUploads, isouter=True) \
             .join(Tags, isouter=True) \
-            .filter(or_(*any_tag))\
+            .filter(or_(*any_tag)) \
+            .filter(or_(
+                *[or_(
+                    (Stores.longitude.between(
+                        self.user_location[1], point[1]) &
+                     Stores.latitude.between(self.user_location[0], point[0])
+                     )
+                ) for point in self.points])
+            ) \
             .group_by(Uploads.id)\
             .all()
 

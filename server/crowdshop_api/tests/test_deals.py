@@ -3,7 +3,7 @@ from crowdshop.deals.dealrequests import DealInquirer
 
 def test_find_items(app, client):
     items = {
-        "location": (44.3132424, -123),
+        "location": (44.55, -123.292),
         "tags": [
             ["napkins", "100"],
             ["chips"],
