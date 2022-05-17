@@ -27,13 +27,29 @@ class DealInquirer(object):
 
     def find_items(self):
         """ query to get all uploads with specified items within region """
+        any_tag = []
+        for tags in self.items:
+            for tag in tags:
+                any_tag.append(Tags.tag.contains(tag))
 
-        tag_or = [or_(*[Tags.tag.contains(x) for x in item]) for item in
-                   self.items]
+        #tag_or = [[Tags.tag.contains(x) for x in item] for item in
+                   #self.items]
+
         self.items_uploads = Stores.query \
+            .with_entities(
+                Stores.id,
+                Stores.address,
+                Uploads.id,
+                Uploads.price,
+                Uploads.on_sale,
+                Uploads.upload_date,
+                Uploads.barcode,
+                Tags.id,
+                Tags.tag)\
             .join(Uploads, isouter=True) \
             .join(TagsUploads, isouter=True) \
             .join(Tags, isouter=True) \
-            .filter(*tag_or)\
+            .filter(or_(*any_tag))\
+            .group_by(Uploads.id)\
             .all()
 
