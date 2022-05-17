@@ -1,49 +1,64 @@
 # data access object for deals
 from geopy import distance
+
+import db
 from db.stores import Stores
 from db.uploads import Uploads
 from db.tags import Tags
 from db.tags_uploads import TagsUploads
-
 from sqlalchemy import or_, and_
 
 
 class DealInquirer(object):
 
-    def __init__(self, items, location:tuple):
+    def __init__(self, items, user_location: tuple):
         self.items = items
         self.deals = []
         self.items_uploads = []
         self.points = []
-        self.store_location = location
+        self.user_location = user_location
 
     def get_perimeter(self, radius=3):
         """ get location points around perimeter of current region """
         for i in range(0, 360, 30):
             self.points.append(
                 distance.distance(
-                    miles=radius).destination(self.store_location,
-                                                            bearing=i))
+                    miles=radius).destination(self.user_location,
+                                              bearing=i))
 
     def find_items(self):
         """ query to get all uploads with specified items within region """
-        self.items_uploads = Uploads.query\
-            .join(Stores)\
-            .join(TagsUploads)\
-            .join(Tags)\
-            .filter(
-                or_(
-                    and_(
-                        Stores.longitude.between(point[0], self.store_location[0],
-                        Stores.latitude.between(point[1],
-                        self.store_location[1])) for point in self.points
-                        )
-                    )
-            )\
-            .filter(
-                or_(Tags.tag.like('%'+item+'%') for item in self.items)
-            ).all()
+        any_tag = []
+        for tags in self.items:
+            for tag in tags:
+                any_tag.append(Tags.tag.contains(tag))
 
+        #tag_or = [[Tags.tag.contains(x) for x in item] for item in
+                   #self.items]
 
-
+        self.items_uploads = Stores.query \
+            .with_entities(
+                Stores.id,
+                Stores.address,
+                Uploads.id,
+                Uploads.price,
+                Uploads.on_sale,
+                Uploads.upload_date,
+                Uploads.barcode,
+                Tags.id,
+                Tags.tag)\
+            .join(Uploads, isouter=True) \
+            .join(TagsUploads, isouter=True) \
+            .join(Tags, isouter=True) \
+            .filter(or_(*any_tag)) \
+            .filter(or_(
+                *[or_(
+                    (Stores.longitude.between(
+                        self.user_location[1], point[1]) &
+                     Stores.latitude.between(self.user_location[0], point[0])
+                     )
+                ) for point in self.points])
+            ) \
+            .group_by(Uploads.id)\
+            .all()
 
