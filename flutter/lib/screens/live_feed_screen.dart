@@ -145,26 +145,26 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     _focusNode.requestFocus();
   }
 
-  Future getData() async {
-    // gets the route to the database to fill in the message list when the app opens
-    http.Response response =
-        await http.get(Uri.parse('http://10.0.1.17:5000/comments'));
-    var data = jsonDecode(response.body);
-    data.toString();
-    for (var myMap = 0; myMap < data.length; myMap++) {
-      //print(data[myMap]);
-      //print(data[myMap]['comment']);
-      //print(data[myMap]['date']);
-      _messages.add(ChatMessage(
-          name: data[myMap]['first_name'] + data[myMap]['last_name'],
-          text: data[myMap]['comment'] + '  ' + data[myMap]['date']));
-    }
+  // Future getData() async {
+  //   // gets the route to the database to fill in the message list when the app opens
+  //   http.Response response =
+  //       await http.get(Uri.parse('http://10.0.1.17:5000/comments'));
+  //   var data = jsonDecode(response.body);
+  //   data.toString();
+  //   for (var myMap = 0; myMap < data.length; myMap++) {
+  //     //print(data[myMap]);
+  //     //print(data[myMap]['comment']);
+  //     //print(data[myMap]['date']);
+  //     _messages.add(ChatMessage(
+  //         name: data[myMap]['first_name'] + data[myMap]['last_name'],
+  //         text: data[myMap]['comment'] + '  ' + data[myMap]['date']));
+  //   }
 
-    //print(data.toString());
-  }
+  //   //print(data.toString());
+  // }
 
-  @override
-  void initState() {
-    getData();
-  }
+  // @override
+  // void initState() {
+  //   getData();
+  // }
 }
