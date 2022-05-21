@@ -21,10 +21,16 @@ class ShoppingList {
     );
   }
 
-  Map toMap() {
+  Map toMapForUpload() {
     var json = <String, dynamic>{};
+    List<List<String>> itemsMatrix = [];
+    for (String itemString in items) {
+      List<String> tagArray = itemString.split(' ');
+      tagArray = tagArray.map((tag) => tag.toLowerCase()).toList();
+      itemsMatrix.add(tagArray);
+    }
     json["title"] = title;
-    json["items"] = items;
+    json["items"] = itemsMatrix;
     json["latitude"] = latitude;
     json["longitude"] = longitude;
     return json;
