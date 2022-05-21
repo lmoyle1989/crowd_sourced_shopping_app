@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:crowd_sourced_shopping_app/models/store.dart';
 import 'package:http/http.dart' as http;
+import 'package:crowd_sourced_shopping_app/components/get_location.dart';
+import 'package:location/location.dart';
 
 class AutoCompleteFuture extends StatefulWidget {
   const AutoCompleteFuture({Key? key}) : super(key: key);
@@ -100,11 +102,12 @@ class _AutoCompleteFutureState extends State<AutoCompleteFuture> {
   }
 
   Future<List<Store>?> getStores() async {
-    String? latitude = '44.5599852';
-    String? longitude = '-123.2939011';
-    const url_web = "crowd-sourced-shopping-cs467.herokuapp.com";
+    LocationData ul = await getLocation();
+    String latitude = ul.latitude.toString();
+    String longitude = ul.longitude.toString();
+    const urlWeb = "crowd-sourced-shopping-cs467.herokuapp.com";
     Uri uri = Uri.https(
-        url_web, '/stores', {'latitude': latitude, 'longitude': longitude});
+        urlWeb, '/stores', {'latitude': latitude, 'longitude': longitude});
     http.Response res = await http.get(uri);
     List<dynamic> data = jsonDecode(res.body);
     if (res.statusCode == 200) {
