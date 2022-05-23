@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:crowd_sourced_shopping_app/models/shopping_list.dart';
-import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:crowd_sourced_shopping_app/components/get_location.dart';
 
 class DealsResponseScreen extends StatefulWidget {
   const DealsResponseScreen({Key? key, required this.shoppingList})
       : super(key: key);
 
   final ShoppingList shoppingList;
-  static const herokuUri =
-      "https://crowd-sourced-shopping-cs467.herokuapp.com/";
+  static const herokuUri = "https://crowd-sourced-shopping-cs467.herokuapp.com";
 
   @override
   State<DealsResponseScreen> createState() => _DealsResponseScreenState();
@@ -23,58 +22,8 @@ class _DealsResponseScreenState extends State<DealsResponseScreen> {
   var locationService = Location();
   bool loading = true;
 
-  Future<LocationData> getLocation() async {
-    LocationData locationData;
-    try {
-      var _serviceEnabled = await locationService.serviceEnabled();
-      if (!_serviceEnabled) {
-        _serviceEnabled = await locationService.requestService();
-        if (!_serviceEnabled) {
-          return Future.error('Failed to enable service. Returning.');
-        }
-      }
-
-      var _permissionGranted = await locationService.hasPermission();
-      if (_permissionGranted == PermissionStatus.denied) {
-        _permissionGranted = await locationService.requestPermission();
-        if (_permissionGranted != PermissionStatus.granted) {
-          return Future.error(
-              'Location service permission not granted. Returning.');
-        }
-      }
-
-      locationData = await locationService.getLocation();
-    } on PlatformException catch (e) {
-      return Future.error('Error: ${e.toString()}, code: ${e.code}');
-    }
-    return locationData;
-  }
-
-  /*
-  void testGet() async {
-    final http.Response apiResponse =
-        await http.get(Uri.parse(DealsResponseScreen.herokuUri));
-    print(apiResponse.body);
-  }
-
-  void testPost() async {
-    final body = jsonEncode(<String, String>{
-      'email': 'lmoyle@gmail.com',
-      'password': 'test',
-    });
-    final headers = <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    final http.Response apiResponse = await http.post(
-        Uri.parse(DealsResponseScreen.herokuUri + "/login"),
-        headers: headers,
-        body: body);
-    print(apiResponse.body);
-  }
-  */
-
   Future<http.Response> postShoppingList() async {
-    final body = jsonEncode(currentList.toMap());
+    final body = jsonEncode(currentList.toMapForUpload());
     final headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     };
