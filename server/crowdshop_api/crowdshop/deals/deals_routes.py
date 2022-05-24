@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from crowdshop.deals.dealrequests import DealInquirer
 
 bp = Blueprint('deals', __name__, url_prefix='/deals')
@@ -6,17 +6,9 @@ bp = Blueprint('deals', __name__, url_prefix='/deals')
 
 @bp.route('', methods=["POST"])
 def find_deal():
-    # query to get all uploads with specific tags according to shopping list
-    # based on a 25 mile radius of stores lat lon
-    # userlat - storelat
-    # userlon - storelon
-    # -- assuming every store has every item --
-    # create Deal, Product and Store instances
-    # add Store to Deal, add Products to Stores
-    # calculate price total for each Deal
-    # calculate total number of products on sale
-    # calculate average days old
-    # prioritize -- cheapest, newest, most on sale
+    data = request.json
+    deals = DealInquirer(data["tags"], user_location=data["location"])
+    best_deal = deals.get_best_deal()
 
-    return {"route implementation in progress"}, 400
+    return jsonify(best_deal), 400
 

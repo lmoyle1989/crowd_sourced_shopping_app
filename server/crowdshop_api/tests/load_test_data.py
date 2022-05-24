@@ -63,7 +63,7 @@ def load_uploads():
 
 def make_tag_instances(tags):
     """ create tag instances and return list of tags """
-    tags = tags.split(',')
+    tags = tags.split(', ')
     tag_entries = [Tags(t) for t in tags]
     return tag_entries
 
