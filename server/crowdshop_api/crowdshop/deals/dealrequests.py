@@ -15,6 +15,7 @@ class DealInquirer(object):
     def __init__(self, items, user_location: tuple):
         self.items = items
         self.deals = {}
+        self.sorted_best_id = []
         self.items_uploads = []
         self.points = []
         self.user_location = user_location
@@ -38,6 +39,7 @@ class DealInquirer(object):
             .with_entities(
                 Stores.id,
                 Stores.address,
+                Stores.name,
                 Uploads.id,
                 Uploads.price,
                 Uploads.on_sale,
@@ -60,21 +62,26 @@ class DealInquirer(object):
             .all()
 
     def structure_stores(self):
+        """
+        give retrieved data structure using models for priority algorithm
+        :return: None
+        """
         for upload in self.items_uploads:
             store_id = upload[0]
             store_address = upload[1]
-            upload_id = upload[2]
-            upload_price = upload[3]
-            upload_sale = upload[4]
-            upload_date = upload[5]
-            tag_name = upload[8]
+            store_name = upload[2]
+            upload_id = upload[3]
+            upload_price = upload[4]
+            upload_sale = upload[5]
+            upload_date = upload[6]
+            tag_name = upload[9]
 
             try:
                 self.deals[store_id].store.products[upload_id].tags.append(
                     tag_name)
             except KeyError:
                 if not self.deals.get(store_id, None):
-                    self.deals[store_id] = Deal(store_address)
+                    self.deals[store_id] = Deal(store_address, store_name)
 
                 product = Product(upload_price, bool(upload_sale),
                                   upload_date)
@@ -85,8 +92,6 @@ class DealInquirer(object):
                 self.deals[store_id].price_total += upload_price
         # iterate over all products and calc age and match percent
         self._product_calc()
-        # sort by match percent
-        # sort each in match percent by age
 
     def _product_calc(self):
         # create set to compare total unique matches
@@ -100,28 +105,45 @@ class DealInquirer(object):
             deal.store.calc_match_percent(
                 set_items
             )
+            # calculate average days old
             deal.calculate_average_days()
+            # calculate total sale items in store
             deal.calculate_total_sale()
+            # calculate average price of all items in store
             deal.average_total_price()
 
     def _sort_best(self):
-        sorted_deals = sorted(
+        self.sorted_best_id = sorted(
             self.deals,
-            key=lambda x: self.deals[x])
-        for k,deal in self.deals.items():
+            key=lambda x: self.deals[x], reverse=True)
 
+        for k,deal in self.deals.items():
             print(f'\n{k} {deal.store.address}\n'
                   f'price: {deal.average_price}\n'
                   f'match: {deal.store.match_percent}\n'
                   f'age: {deal.average_days_old}')
 
-        print('sorted',sorted_deals)
+    def _make_final_object(self):
+        best_deals = []
+        for i in self.sorted_best_id:
+            best_deals.append(
+                {
+                    "store_address": self.deals[i].store.address,
+                    "store_name": self.deals[i].store.name,
+                    "average_price": self.deals[i].average_price,
+                    "match_rank": self.deals[i].store.match_percent,
+                    "days_since_upload": self.deals[i].average_days_old
+                }
+            )
+        return best_deals
 
     def get_best_deal(self):
         self.get_perimeter()
         self.find_items()
         self.structure_stores()
         self._sort_best()
+        return self._make_final_object()
+
 
 
 
