@@ -96,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
       final SharedPreferences preferences = await SharedPreferences.getInstance();
       preferences.setString('user_token', token);
       preferences.setInt('user_id', userid);
+      preferences.setString('email', _email.text);
       Navigator.of(context).pushNamed('main_tab_controller');
     }
     else {

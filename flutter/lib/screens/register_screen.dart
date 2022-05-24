@@ -8,7 +8,6 @@ import 'package:crowd_sourced_shopping_app/models/user.dart';
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key? key}) : super(key: key);
 
-
   static const String routeName = 'register';
   static const herokuUri =
       "https://crowd-sourced-shopping-cs467.herokuapp.com/";

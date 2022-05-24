@@ -12,8 +12,6 @@ class UploadScreen extends StatefulWidget {
 
   static const herokuUri =
       "https://crowd-sourced-shopping-cs467.herokuapp.com/";
-  static const devUri =
-      "http://10.0.2.2:8080";
 
   @override
   State<UploadScreen> createState() => _UploadScreenState();
@@ -27,11 +25,15 @@ class _UploadScreenState extends State<UploadScreen> {
   final TextEditingController _storeid = TextEditingController();
   bool isChecked = false;
   int _userId = 0;
+  var _email;
+  var _userToken;
 
   void _getUserInfo() async {
     final SharedPreferences sharedPreferences = 
         await SharedPreferences.getInstance();
     _userId = sharedPreferences.getInt('user_id') as int;
+    _email = sharedPreferences.getString('email');
+    _userToken = sharedPreferences.getString('user_token');
   }
 
   @override
@@ -128,6 +130,8 @@ class _UploadScreenState extends State<UploadScreen> {
                       duration: Duration(seconds: 100))
                     );
                     sendPost();
+                    _formKey.currentState!.reset();
+                    _price.text = "";
                   }
                 },
               )
@@ -140,44 +144,39 @@ class _UploadScreenState extends State<UploadScreen> {
 
   void sendPost() async {
     final body = jsonEncode(<String, dynamic>{
-      'user_id': _userId,
-      'store_id': _storeid.text,
-      'price': _price.text,
-      'barcode': _barcode.text,
-      'upload_date': DateTime.now(),
+      'store_id': int.parse(_storeid.text),
+      'price': double.parse(_price.text),
+      'barcode': int.parse(_barcode.text),
+      'upload_date': DateTime.now().toUtc().millisecondsSinceEpoch,
       'on_sale': isChecked,
+      'email': _email,
     });
-  
+    final token = 'Bearer ' + _userToken;
     final headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': token,
     };
     final http.Response apiResponse = await http.post(
-        Uri.parse(UploadScreen.devUri + "/users" + 
+        Uri.parse(UploadScreen.herokuUri + "/users/" + 
             _userId.toString() + "/uploads"),
         headers: headers,
         body: body
     );
-    
+
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
-    // if (apiResponse.statusCode == 201) {
-    //   var decode = jsonDecode(apiResponse.body) as Map<String, dynamic>;
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text('Successful registration!'),
-    //     duration: Duration(seconds: 2),)
-    //   );
-    //   Navigator.of(context).pop();
-    // }
-    // else if (apiResponse.statusCode == 409) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text('Email already registered'))
-    //   );
-    // }
-    // else {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text('Error with registration'))
-    //   );
-    // }
+    if (apiResponse.statusCode == 201) {
+      var decode = jsonDecode(apiResponse.body) as Map<String, dynamic>;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Successful upload!'),
+        duration: Duration(seconds: 2),)
+      );
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error with upload'))
+      );
+    }
   }  
 
   Future<void> scanBarcode() async {
