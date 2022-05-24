@@ -3,7 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '/components/text_form_field.dart';
+import 'package:crowd_sourced_shopping_app/components/text_form_field.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -96,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
       final SharedPreferences preferences = await SharedPreferences.getInstance();
       preferences.setString('user_token', token);
       preferences.setInt('user_id', userid);
+      preferences.setString('email', _email.text);
       Navigator.of(context).pushNamed('main_tab_controller');
     }
     else {

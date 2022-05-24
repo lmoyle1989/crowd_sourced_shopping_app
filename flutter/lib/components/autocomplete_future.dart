@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:crowd_sourced_shopping_app/models/store.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +7,8 @@ import 'package:crowd_sourced_shopping_app/components/get_location.dart';
 import 'package:location/location.dart';
 
 class AutoCompleteFuture extends StatefulWidget {
-  const AutoCompleteFuture({Key? key}) : super(key: key);
+  final TextEditingController storeid;
+  const AutoCompleteFuture({Key? key, required this.storeid}) : super(key: key);
 
   @override
   State<AutoCompleteFuture> createState() => _AutoCompleteFutureState();
@@ -65,6 +66,7 @@ class _AutoCompleteFutureState extends State<AutoCompleteFuture> {
         //String store = "${selectedStore.name} ${selectedStore.address}";
         setState(() {
           autocompleteSelection = selectedStore.id;
+          this.widget.storeid.text = selectedStore.id.toString();
         });
       },
     );
