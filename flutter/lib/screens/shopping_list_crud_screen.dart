@@ -8,7 +8,7 @@ class ShoppingListCrudScreen extends StatefulWidget {
 
   final CollectionReference shoppingLists;
 
-  ShoppingListCrudScreen({
+  const ShoppingListCrudScreen({
     Key? key,
     required this.documentSnapshot,
     required this.shoppingLists,

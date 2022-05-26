@@ -5,7 +5,7 @@ import 'package:crowd_sourced_shopping_app/screens/shopping_list_crud_screen.dar
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ShoppingListsScreen extends StatefulWidget {
-  ShoppingListsScreen({Key? key}) : super(key: key);
+  const ShoppingListsScreen({Key? key}) : super(key: key);
 
   @override
   State<ShoppingListsScreen> createState() => _ShoppingListsScreenState();
