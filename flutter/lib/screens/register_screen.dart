@@ -111,7 +111,6 @@ class _RegisterPageState extends State<RegisterPage> {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
     if (apiResponse.statusCode == 201) {
-      var decode = jsonDecode(apiResponse.body) as Map<String, dynamic>;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Successful registration!'),
         duration: Duration(seconds: 2),)

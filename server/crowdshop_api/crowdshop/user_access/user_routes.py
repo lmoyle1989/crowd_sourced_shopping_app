@@ -2,6 +2,8 @@ from flask import Blueprint, request, url_for, current_app
 from crowdshop.auth import jwt_required
 from db.users import Users
 from db.uploads import Uploads
+from db.tags import Tags
+from db.tags_uploads import TagsUploads
 from db import db
 from crowdshop.utils.response import generate_response
 import json
@@ -43,16 +45,28 @@ def user_upload(user_id):
         upload_date = datetime.datetime.fromtimestamp(data['upload_date']//1000)
         on_sale = data['on_sale']
         email = str(data['email'])
+        tags = data['tags']
     except KeyError:
         return generate_response(400, {"message": "missing input"})
-
-    upload = Uploads(price, upload_date, on_sale, barcode, int(user_id), store_id)
-    db.session.add(upload)
-    db.session.commit()
 
     user = Users.query.filter_by(email=email).first()
     user.uploads_count += 1
     db.session.commit()
+
+    upload = Uploads(price, upload_date, on_sale, barcode, int(user_id), store_id)
+
+    tag_ids = []
+    tags = tags.split(', ')
+    for t in tags:
+        tag = Tags.query.filter_by(tag=t).first()
+        if tag is None:
+            tag = Tags(t)
+            db.session.add(tag)
+        tag_ids.append(tag)
+    for ti in tag_ids:
+        upload.tag_upload_relationship.append(ti)
+    db.session.commit()
+    
     return generate_response(201, {"message": "success"})
 
 

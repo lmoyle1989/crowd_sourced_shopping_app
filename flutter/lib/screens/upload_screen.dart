@@ -150,6 +150,7 @@ class _UploadScreenState extends State<UploadScreen> {
       'upload_date': DateTime.now().toUtc().millisecondsSinceEpoch,
       'on_sale': isChecked,
       'email': _email,
+      'tags': _tags.text,
     });
     final token = 'Bearer ' + _userToken;
     final headers = <String, String>{
@@ -166,7 +167,6 @@ class _UploadScreenState extends State<UploadScreen> {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
     if (apiResponse.statusCode == 201) {
-      var decode = jsonDecode(apiResponse.body) as Map<String, dynamic>;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Successful upload!'),
         duration: Duration(seconds: 2),)
