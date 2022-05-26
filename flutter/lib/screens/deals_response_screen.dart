@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:crowd_sourced_shopping_app/components/get_location.dart';
 import 'package:crowd_sourced_shopping_app/models/api_response.dart';
+import 'package:crowd_sourced_shopping_app/components/best_store_card.dart';
 
 class DealsResponseScreen extends StatefulWidget {
   const DealsResponseScreen({Key? key, required this.shoppingList})
@@ -53,22 +54,20 @@ class _DealsResponseScreenState extends State<DealsResponseScreen> {
       (loc) {
         currentList.latitude = loc.latitude;
         currentList.longitude = loc.longitude;
-        /*
         _postShoppingList().then(
           (response) {
-            jsonResponse = response;
-            bestStores = _storesFromJSON(jsonResponse.body);
+            bestStores = _storesFromJSON(response.body);
             setState(() {
               loading = false;
             });
           },
         );
-        */
-
+        /*
         bestStores = _storesFromJSON(jsonEncode(testResponse));
         setState(() {
           loading = false;
         });
+        */
       },
     );
   }
@@ -100,52 +99,8 @@ class _DealsResponseScreenState extends State<DealsResponseScreen> {
               ],
             );
           } else if (bestStores.isNotEmpty) {
-            return Center(
-              child: Card(
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(16))),
-                child: FractionallySizedBox(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            Icons.local_fire_department,
-                            color: Colors.red,
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            "Best Store Found!",
-                            style: TextStyle(fontSize: 24),
-                          ),
-                          SizedBox(width: 10),
-                          Icon(
-                            Icons.local_fire_department,
-                            color: Colors.red,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 30),
-                      Text(bestStores[0].storeName!,
-                          style: TextStyle(fontSize: 20)),
-                      const SizedBox(height: 20),
-                      Text(bestStores[0].storeAddress!,
-                          style: TextStyle(fontSize: 16)),
-                      const SizedBox(height: 20),
-                      Text("${bestStores[0].matchRank!}% Tag Match",
-                          style: TextStyle(fontSize: 16)),
-                      const SizedBox(height: 20),
-                      Text(
-                          "Total Cost: \$${bestStores[0].averagePrice! * currentList.items.length}")
-                    ],
-                  ),
-                  widthFactor: 0.75,
-                  heightFactor: 0.75,
-                ),
-              ),
-            );
+            return BestStoreCard(
+                store: bestStores[0], itemCount: currentList.items.length);
             /*
             return ListView.builder(
               itemCount: bestStores.length,
@@ -171,19 +126,21 @@ class _DealsResponseScreenState extends State<DealsResponseScreen> {
   }
 }
 
+/*
 var testResponse = [
   {
-    'store_address': '1234 test street',
-    'store_name': 'safeway',
+    'store_address': '450 SW 3rd St, Corvallis, OR 97333',
+    'store_name': 'Safeway',
     'average_price': 5.0,
-    'match_rank': 75.0,
+    'match_rank': 83.3,
     'days_since_upload': 1.0
   },
   {
-    'store_address': '1235 test street',
-    'store_name': 'safeway2',
+    'store_address': '590 NE Circle Blvd, Corvallis, OR 97330',
+    'store_name': 'Safeway',
     'average_price': 6.0,
     'match_rank': 77.0,
     'days_since_upload': 2.0
   }
 ];
+*/
