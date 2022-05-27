@@ -56,12 +56,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.account_circle,
-                    size: 100,
+                  Card(
+                    child: SizedBox(
+                      child: (_getUserRankTitle(user.uploadsCount as int)!
+                          .userRankIcon as Icon),
+                      height: 100,
+                      width: 100,
+                    ),
                   ),
                   const SizedBox(height: 50),
-                  Text("Shopper Rank: ${user.userRank}"),
+                  _getUserRankTitle(user.uploadsCount as int)!.userRankText
+                      as Text,
                   const SizedBox(height: 50),
                   Text("Upload Count: ${user.uploadsCount}"),
                   const SizedBox(height: 50),
@@ -77,3 +82,87 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+
+class UserRankTitle {
+  Icon? userRankIcon;
+  Text? userRankText;
+
+  UserRankTitle();
+}
+
+UserRankTitle? _getUserRankTitle(int uploadCount) {
+  UserRankTitle ret = UserRankTitle();
+  if (uploadCount < 10) {
+    ret.userRankIcon = const Icon(
+      Icons.bedroom_baby,
+      color: Colors.blue,
+      size: 90,
+    );
+    ret.userRankText = const Text(
+      "BRAND NEW SHOPPER",
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.blue,
+      ),
+    );
+  } else if (uploadCount < 50 && uploadCount >= 10) {
+    ret.userRankIcon = const Icon(
+      Icons.shopping_bag_outlined,
+      color: Colors.green,
+      size: 90,
+    );
+    ret.userRankText = const Text(
+      "NOVICE SHOPPER",
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.green,
+      ),
+    );
+  } else if (uploadCount < 100 && uploadCount >= 50) {
+    ret.userRankIcon = const Icon(
+      Icons.shopping_cart,
+      color: Colors.yellow,
+      size: 90,
+    );
+    ret.userRankText = const Text(
+      "EXPERIENCED SHOPPER",
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.yellow,
+      ),
+    );
+  } else if (uploadCount < 500 && uploadCount >= 100) {
+    ret.userRankIcon = const Icon(
+      Icons.shopping_cart_outlined,
+      color: Colors.orange,
+      size: 90,
+    );
+    ret.userRankText = const Text(
+      "BEAVER SHOPPER",
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.orange,
+      ),
+    );
+  } else {
+    ret.userRankIcon = const Icon(
+      Icons.local_fire_department,
+      color: Colors.red,
+      size: 90,
+    );
+    ret.userRankText = const Text(
+      "ULTRA ELITE EXTREME SHOPPER",
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.red,
+      ),
+    );
+  }
+  return ret;
+}
+
+User testUser = User(
+    email: "testemail@gmail.com",
+    firstName: "Test",
+    lastName: "User",
+    uploadsCount: 501);
