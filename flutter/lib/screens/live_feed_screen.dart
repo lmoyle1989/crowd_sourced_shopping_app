@@ -6,6 +6,7 @@ import 'dart:convert';
 class LiveFeedScreen extends StatelessWidget {
   const LiveFeedScreen({Key? key}) : super(key: key);
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
