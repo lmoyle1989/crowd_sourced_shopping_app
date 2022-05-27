@@ -5,6 +5,7 @@ from db import db as db
 from db.stores import Stores
 from db.uploads import Uploads
 from db.tags import Tags
+from db.users import Users
 from db.tags_uploads import TagsUploads
 from crowdshop.app import init_app
 from datetime import datetime
@@ -20,6 +21,7 @@ def drop_all():
 
 def make_all():
     load_stores_data()
+    make_users()
     load_uploads()
 
 
@@ -40,6 +42,21 @@ def load_stores_data():
     db.session.bulk_save_objects(all_stores)
     db.session.commit()
 
+def make_users():
+    path = get_path('users-data.csv')
+    with open(path, 'r') as users:
+        read_data = csv.DictReader(users, delimiter=',')
+        for row in read_data:
+            user = Users(
+                row["first_name"],
+                row["last_name"],
+                row["password"],
+                row["email"],
+                row["uploads_count"],
+                row["user_rank"]
+            )
+            db.session.add(user)
+            db.session.commit()
 
 def load_uploads():
     path = get_path('uploads-data.csv')
@@ -82,6 +99,6 @@ if __name__ == '__main__':
     with app.app_context():
         drop_all()
         db.create_all()
-        load_stores_data()
+        make_all()
 
 
