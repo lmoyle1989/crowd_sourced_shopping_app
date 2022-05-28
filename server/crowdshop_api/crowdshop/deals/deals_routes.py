@@ -10,5 +10,5 @@ def find_deal():
     deals = DealInquirer(data["tags"], user_location=data["location"])
     best_deal = deals.get_best_deal()
 
-    return jsonify(best_deal), 400
+    return jsonify(best_deal), 200
 

@@ -27,7 +27,12 @@ class ShoppingList {
     for (String itemString in items) {
       List<String> tagArray = itemString.split(' ');
       tagArray = tagArray.map((tag) => tag.toLowerCase()).toList();
-      itemsMatrix.add(tagArray);
+      List<String> cleanedTagArray = [];
+      for (String tag in tagArray) {
+        String cleanedTag = tag.replaceAll(RegExp('[^a-z0-9]'), '');
+        cleanedTagArray.add(cleanedTag);
+      }
+      itemsMatrix.add(cleanedTagArray);
     }
     json["title"] = title;
     json["items"] = itemsMatrix;
