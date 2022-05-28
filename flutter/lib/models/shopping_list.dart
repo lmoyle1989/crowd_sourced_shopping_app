@@ -35,9 +35,8 @@ class ShoppingList {
       itemsMatrix.add(cleanedTagArray);
     }
     json["title"] = title;
-    json["items"] = itemsMatrix;
-    json["latitude"] = latitude;
-    json["longitude"] = longitude;
+    json["tags"] = itemsMatrix;
+    json["location"] = [latitude, longitude];
     return json;
   }
 
