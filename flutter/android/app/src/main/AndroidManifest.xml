@@ -2,7 +2,7 @@
     package="edu.oregonstate.u934045150.crowd_sourced_shopping_app">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
    <application
-        android:label="crowd_sourced_shopping_app"
+        android:label="BeaverDeals"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
