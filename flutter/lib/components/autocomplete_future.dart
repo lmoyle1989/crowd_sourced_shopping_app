@@ -97,7 +97,7 @@ class _AutoCompleteFutureState extends State<AutoCompleteFuture> {
         },
         validator: (String? val) {
           if (autocompleteSelection == null) {
-            return "please select a store from the list";
+            return "Please select a store from the list";
           }
           return null;
         });

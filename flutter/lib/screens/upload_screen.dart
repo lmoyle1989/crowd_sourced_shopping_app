@@ -105,7 +105,7 @@ class _UploadScreenState extends State<UploadScreen> {
           ),
           CrowdFormField(
             controller: _tags,
-            fieldText: 'Tags',
+            fieldText: 'Tags (comma-separated)',
             validator: tagsValidate,
             textAlignment: TextAlign.left,
             contWidth: 1.0,
@@ -150,7 +150,7 @@ class _UploadScreenState extends State<UploadScreen> {
       'upload_date': DateTime.now().toUtc().millisecondsSinceEpoch,
       'on_sale': isChecked,
       'email': _email,
-      'tags': _tags.text,
+      'tags': _tags.text.toLowerCase(),
     });
     final token = 'Bearer ' + _userToken;
     final headers = <String, String>{
