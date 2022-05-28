@@ -57,9 +57,11 @@ class _DealsResponseScreenState extends State<DealsResponseScreen> {
         _postShoppingList().then(
           (response) {
             bestStores = _storesFromJSON(response.body);
-            setState(() {
-              loading = false;
-            });
+            setState(
+              () {
+                loading = false;
+              },
+            );
           },
         );
         /*
