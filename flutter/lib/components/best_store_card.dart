@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:crowd_sourced_shopping_app/models/api_response.dart';
+import 'package:flutter/foundation.dart';
 
 class BestStoreCard extends StatelessWidget {
   final ApiResponse store;
@@ -46,14 +47,16 @@ class BestStoreCard extends StatelessWidget {
               const SizedBox(height: 20),
               Text(store.storeAddress!, style: const TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              Text("${store.matchRank!}% Tag Match",
+              Text("${(store.matchRank! * 100).toStringAsFixed(2)}% Tag Match",
                   style: const TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              Text("Total Cost: \$${store.averagePrice! * itemCount}"),
+              Text(
+                  "Total Cost: \$${(store.averagePrice! * itemCount).toStringAsFixed(2)}"),
               const SizedBox(
                 height: 20,
               ),
-              Text("Last Upload: ${store.daysSinceUpload} days ago")
+              Text(
+                  "Last Upload: ${(store.daysSinceUpload!).toStringAsFixed(0)} days ago")
             ],
           ),
           widthFactor: 0.75,
