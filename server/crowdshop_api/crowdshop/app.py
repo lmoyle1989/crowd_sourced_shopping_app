@@ -3,6 +3,7 @@ import os.path
 from flask import Flask
 from crowdshop.user_access import user_routes
 from crowdshop.auth import login_routes, jwt
+from crowdshop.comments import comment_routes
 from crowdshop.stores import stores_routes
 from db import db
 from dotenv import load_dotenv
@@ -42,6 +43,7 @@ def init_app(config_type=None):
 
 def reg_blueprint(app):
     app.register_blueprint(user_routes.bp)
+    app.register_blueprint(comment_routes.bp)
     app.register_blueprint(login_routes.bp)
     app.register_blueprint(deals_routes.bp)
     app.register_blueprint(stores_routes.bp)
