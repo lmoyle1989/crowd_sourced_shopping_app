@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from crowdshop.errors.errors import reroute
 from crowdshop.deals import deals_routes
 from db.users import Users
+from db.user_comments import UserComments
 from db.stores import Stores
 from db.uploads import Uploads
 from db.tags import Tags

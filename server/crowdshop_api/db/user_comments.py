@@ -7,7 +7,7 @@ class UserComments(db.Model):
     comment_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     comment_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     comment = db.Column(db.String(500), nullable=False)
-    date = db.Column(db.DATETIME, nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
 
     comment_relationship = db.relationship('Users', backref='users', lazy=True)
 
