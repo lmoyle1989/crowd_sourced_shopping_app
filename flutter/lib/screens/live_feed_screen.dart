@@ -3,10 +3,11 @@ import 'package:http/http.dart' as http;
 //import 'package:intl/intl.dart';
 import 'dart:convert';
 
+String testText = '';
+
 class LiveFeedScreen extends StatelessWidget {
   const LiveFeedScreen({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,8 +20,9 @@ class ChatMessage extends StatelessWidget {
   ChatMessage({required this.name, required this.text, Key? key})
       : super(key: key);
   final String text;
-  final String name; // will be used later to upload name based on login of user
+  final String name;
 
+  // creates the avatar and sets up the user's name as it will be displayed on the screen
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,9 +32,7 @@ class ChatMessage extends StatelessWidget {
           children: [
             Container(
               margin: const EdgeInsets.only(right: 16.0),
-              child: CircleAvatar(
-                  child: Text(name[
-                      0])), // can be changed later to have shopper_rank icon
+              child: CircleAvatar(child: Text(name[0])),
             ),
             Expanded(
               child: Column(
@@ -53,6 +53,9 @@ class ChatMessage extends StatelessWidget {
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
+
+  static const herokuUri =
+      'https://crowd-sourced-shopping-cs467.herokuapp.com/';
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -107,9 +110,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Friendly Chat'),
-      ),
       body: Column(children: [
         Flexible(
           child: ListView.builder(
@@ -134,6 +134,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     setState(() {
       _isComposing = false;
     });
+    print("In the handleSubmitted fn");
+    print("User text string" + text);
+    testText = text;
+    postComment();
     // adds a new comment to the _message list
     ChatMessage message = ChatMessage(
       name: 'User Name', // possible add query connection here
@@ -145,26 +149,29 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     _focusNode.requestFocus();
   }
 
-  // Future getData() async {
-  //   // gets the route to the database to fill in the message list when the app opens
-  //   http.Response response =
-  //       await http.get(Uri.parse('http://10.0.1.17:5000/comments'));
-  //   var data = jsonDecode(response.body);
-  //   data.toString();
-  //   for (var myMap = 0; myMap < data.length; myMap++) {
-  //     //print(data[myMap]);
-  //     //print(data[myMap]['comment']);
-  //     //print(data[myMap]['date']);
-  //     _messages.add(ChatMessage(
-  //         name: data[myMap]['first_name'] + data[myMap]['last_name'],
-  //         text: data[myMap]['comment'] + '  ' + data[myMap]['date']));
-  //   }
+  Future getData() async {
+    // gets the route to the database to fill in the message list when the app opens
+    http.Response response =
+        await http.get(Uri.parse(ChatScreen.herokuUri + '/comments'));
+    var data = jsonDecode(response.body);
+    data.toString();
+    for (var myMap = 0; myMap < data.length; myMap++) {
+      _messages.add(ChatMessage(
+          name: data[myMap]['first_name'] + data[myMap]['last_name'],
+          text: data[myMap]['comment'] + '  ' + data[myMap]['date']));
+    }
+  }
 
-  //   //print(data.toString());
-  // }
+  Future postComment() async {
+    // posts the comment entered in the TextField to the UserComments table in database
+    print("Test text string" + testText);
+    String send_comment = ChatScreen.herokuUri +
+        '/new-comment?user_id=10&new_comment=${testText}';
+    http.Response response = await http.post(Uri.parse(send_comment));
+  }
 
-  // @override
-  // void initState() {
-  //   getData();
-  // }
+  @override
+  void initState() {
+    getData();
+  }
 }
