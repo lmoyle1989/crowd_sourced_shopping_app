@@ -140,7 +140,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     postComment();
     // adds a new comment to the _message list
     ChatMessage message = ChatMessage(
-      name: 'User Name', // possible add query connection here
+      name: 'ciarra murphy', // possible add query connection here
       text: text,
     );
     setState(() {
@@ -157,7 +157,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     data.toString();
     for (var myMap = 0; myMap < data.length; myMap++) {
       _messages.add(ChatMessage(
-          name: data[myMap]['first_name'] + data[myMap]['last_name'],
+          name: data[myMap]['first_name'] + ' ' + data[myMap]['last_name'],
           text: data[myMap]['comment'] + '  ' + data[myMap]['date']));
     }
   }
@@ -165,8 +165,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   Future postComment() async {
     // posts the comment entered in the TextField to the UserComments table in database
     print("Test text string" + testText);
-    String send_comment = ChatScreen.herokuUri +
-        '/new-comment?user_id=10&new_comment=${testText}';
+    String send_comment =
+        ChatScreen.herokuUri + '/comments?user_id=10&new_comment=${testText}';
     http.Response response = await http.post(Uri.parse(send_comment));
   }
 
