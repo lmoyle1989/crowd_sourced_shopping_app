@@ -109,6 +109,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Friendly Chat'),
+        automaticallyImplyLeading: false,
       ),
       body: Column(children: [
         Flexible(

@@ -115,10 +115,10 @@ class _ShoppingListsScreenState extends State<ShoppingListsScreen> {
                   } else {
                     if (streamSnapshot.data!.docs.isEmpty) {
                       return const Center(
-                        child: SizedBox(
-                          height: 100,
-                          width: 100,
-                          child: Icon(Icons.shopping_bag),
+                        child: Icon(
+                          Icons.shopping_bag,
+                          size: 100,
+                          color: Colors.grey,
                         ),
                       );
                     }
