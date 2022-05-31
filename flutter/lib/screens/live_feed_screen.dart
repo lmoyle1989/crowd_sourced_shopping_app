@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 //import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+// global variables
 String testText = '';
+int? getUserId;
 
 class LiveFeedScreen extends StatelessWidget {
   const LiveFeedScreen({Key? key}) : super(key: key);
@@ -151,6 +154,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Future getData() async {
     // gets the route to the database to fill in the message list when the app opens
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    var retrieveId = preferences.getInt('user_id');
+    getUserId = retrieveId;
+    print("Below is the current user id of the person logged in");
+    print(getUserId);
+    //useUserId();
     http.Response response =
         await http.get(Uri.parse(ChatScreen.herokuUri + '/comments'));
     var data = jsonDecode(response.body);
@@ -165,10 +174,14 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   Future postComment() async {
     // posts the comment entered in the TextField to the UserComments table in database
     print("Test text string" + testText);
-    String send_comment =
-        ChatScreen.herokuUri + '/comments?user_id=10&new_comment=${testText}';
+    String send_comment = ChatScreen.herokuUri +
+        '/comments?user_id=$getUserId&new_comment=$testText';
     http.Response response = await http.post(Uri.parse(send_comment));
   }
+
+  // useUserId() async {
+
+  // }
 
   @override
   void initState() {
