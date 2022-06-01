@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -28,6 +29,7 @@ class ChatMessage extends StatelessWidget {
   // creates the avatar and sets up the user's name as it will be displayed on the screen
   @override
   Widget build(BuildContext context) {
+    print("In the build of the ChatMessage");
     return Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),
         child: Row(
@@ -71,6 +73,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       TextEditingController(); // reads the string and clears the section after submitting
   final FocusNode _focusNode = FocusNode();
   bool _isComposing = false;
+  bool loadPage = true;
 
   Widget _buildTextComposer() {
     // builds the section to add a comment and print it to the screen in the app
@@ -112,6 +115,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // call getUser to make sure getUserName is set
+    getUser();
+    const delayData = Duration(
+        seconds: 0); // needed to get list to appear on screen when logged in
+    delayData;
+
     return Scaffold(
       body: Column(children: [
         Flexible(
@@ -152,7 +161,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     _focusNode.requestFocus();
   }
 
-  Future getData() async {
+  Future<void> getData() async {
     // gets the route to the database to fill in the message list when the app opens
 
     http.Response response =
@@ -165,7 +174,14 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           name: data[myMap]['first_name'] + ' ' + data[myMap]['last_name'],
           text: data[myMap]['comment'] + '  ' + data[myMap]['date']));
     }
-    return _messages;
+    setState(() {
+      loadPage = false;
+    });
+  }
+
+  @override
+  void initState() {
+    getData();
   }
 
   Future postComment() async {
@@ -175,11 +191,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     var retrieveId = preferences.getInt('user_id');
     getUserId = retrieveId;
-    print(getUserId);
-    print("Test text string" + testText);
-    String send_comment = ChatScreen.herokuUri +
+
+    String sendComment = ChatScreen.herokuUri +
         '/comments?user_id=$getUserId&new_comment=$testText';
-    http.Response response = await http.post(Uri.parse(send_comment));
+    http.Response response = await http.post(Uri.parse(sendComment));
   }
 
   Future getUser() async {
@@ -195,11 +210,5 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     var data = jsonDecode(response.body);
 
     getUserName = data['first_name'] + ' ' + data['last_name'];
-  }
-
-  @override
-  void initState() {
-    getData();
-    getUser();
   }
 }
