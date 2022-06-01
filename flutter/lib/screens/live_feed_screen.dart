@@ -29,7 +29,6 @@ class ChatMessage extends StatelessWidget {
   // creates the avatar and sets up the user's name as it will be displayed on the screen
   @override
   Widget build(BuildContext context) {
-    print("In the build of the ChatMessage");
     return Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),
         child: Row(
